@@ -1,0 +1,26 @@
+.day {
+  width: 30px;
+  height: 25px;
+  font-size: .9rem;
+  text-align: right;
+  margin-right: 2px;
+  border: 1px solid #ddd;
+  background: #eee;
+}
+
+.day div {
+  padding-right: 5px;
+}
+
+.day.daySelected {
+  color: #FFF;
+  background: orange;
+  font-weight: bold;
+}
+
+.day:hover,
+.day.daySelected:hover {
+  color: #FFF;
+  background: dodgerblue;
+  cursor: pointer;
+}

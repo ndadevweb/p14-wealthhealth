@@ -1,5 +1,9 @@
-import { useState } from "react"
-import DatePicker from "../../DatePicker/DatePicker"
+import { useState } from 'react'
+import DatePicker from '../../DatePicker/DatePicker'
+import DropDown from '../../DropDown/DropDown'
+
+import stateDataFromJSON from '../../../data/state.json'
+import departmentDataFromJSON from '../../../data/department.json'
 
 export default function Create() {
 
@@ -9,6 +13,9 @@ export default function Create() {
   const [startDate, setStartDate] = useState('')
   const [activeStartDateDatePicker, setActiveStartDateDatePicker] = useState(false)
 
+  const [state, setState] = useState(null)
+  const [department, setDepartment] = useState(null)
+
   /**
    * Handle form submit
    *
@@ -16,6 +23,7 @@ export default function Create() {
    */
   function handleSubmit(event) {
     event.preventDefault()
+
   }
 
   /**
@@ -111,9 +119,7 @@ export default function Create() {
         </div>
 
         <div>
-          { /* Dropdown */ }
-          <label htmlFor="state">State</label>
-          <select name="state" id="state"></select>
+          <DropDown data={ stateDataFromJSON.data } callback={ (dataSelected) => setState(dataSelected) } options={ { labelName: 'State' } } />
         </div>
 
         <div>
@@ -123,10 +129,8 @@ export default function Create() {
       </fieldset>
 
       <div>
-          { /* Dropdown */ }
-          <label htmlFor="department">Department</label>
-          <select name="department" id="department"></select>
-        </div>
+        <DropDown data={ departmentDataFromJSON.data } callback={ (dataSelected) => { setDepartment(dataSelected) } } options={ { labelName:  'Department' } } />
+      </div>
 
         <button type="submit">Save</button>
     </form>

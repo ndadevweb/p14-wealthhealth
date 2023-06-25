@@ -1,6 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom'
 import App from '../App'
-import { Home, ViewEmployees, Error } from '../pages/index'
+import { Home, Employees, Error } from '../pages/index'
 
 export const router = createBrowserRouter([
   {
@@ -15,7 +15,7 @@ export const router = createBrowserRouter([
       {
         path: '/employees-list',
         caseSensitive: true,
-        element: <ViewEmployees />
+        element: <Employees />
       },
       {
         path: '*', element: <Error />

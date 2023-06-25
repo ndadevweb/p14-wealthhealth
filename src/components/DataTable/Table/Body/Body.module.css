@@ -1,0 +1,9 @@
+.empty {
+  padding: 5px 0;
+  border-top: 1px solid #000;
+  border-right: none;
+  border-bottom: 1px solid #000;
+  border-left: none;
+  background: #EEE;
+  text-align:center;
+}

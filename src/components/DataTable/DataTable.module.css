@@ -1,0 +1,15 @@
+.container {
+  /* overflow: auto */
+}
+
+.container .header,
+.container .footer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+
+.container .footer {
+
+}

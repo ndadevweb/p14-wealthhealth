@@ -1,0 +1,43 @@
+.cellHead {
+  cursor: pointer;
+}
+
+.cellHead div {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  position: relative;
+  padding-right: 20px;
+  /* padding-left: 20px; */
+  /* margin-right: 15px; */
+  white-space: nowrap;
+}
+
+.iconsSorting {
+  position: absolute;
+  top: 0;
+  right: 10px;
+  bottom: 0;
+
+  display: flex;
+  justify-content: center;
+
+  font-size: 10px;
+
+  color: #dedede;
+}
+
+.iconsSorting i:first-child {
+  position: absolute;
+  top: -1px;
+}
+
+.iconsSorting i:last-child {
+  position: absolute;
+  bottom: -1px;
+}
+
+.cellHead[data-order="asc"] .iconsSorting i:first-child,
+.cellHead[data-order="desc"] .iconsSorting i:last-child {
+  color: #3389cf;
+}

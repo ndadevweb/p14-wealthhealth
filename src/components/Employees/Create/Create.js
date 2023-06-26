@@ -164,7 +164,7 @@ export default function Create() {
           </div>
 
           <div>
-            <DropDown data={ stateDataFromJSON.data } callback={ (dataSelected) => setState(dataSelected) } options={ { labelName: 'State' } } />
+            <DropDown data={ stateDataFromJSON.data } callback={ (dataSelected) => setState(dataSelected.id) } options={ { labelName: 'State' } } />
           </div>
 
           <div>
@@ -174,7 +174,7 @@ export default function Create() {
         </fieldset>
 
         <div>
-          <DropDown data={ departmentDataFromJSON.data } callback={ (dataSelected) => { setDepartment(dataSelected) } } options={ { labelName:  'Department' } } />
+          <DropDown data={ departmentDataFromJSON.data } callback={ (dataSelected) => { setDepartment(dataSelected.name) } } options={ { labelName:  'Department' } } />
         </div>
 
         <button type="submit">Save</button>

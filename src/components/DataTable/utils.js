@@ -156,7 +156,9 @@ export function sortDataByColumn(data, columns, columnName, order) {
 
   functionToSortData = typesOfColumn[typeOfColumn](columnName, order)
 
-  return data.sort(functionToSortData)
+  const dataToSort = [...data]
+
+  return dataToSort.sort(functionToSortData)
 }
 
 /**

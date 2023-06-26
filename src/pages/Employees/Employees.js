@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import DataTable from '../../components/DataTable/DataTable'
-
-import employesDataFromJSON from '../../data/employees2.json'
+import { fetchAll } from '../../features/employeesSlice'
+import { useSelector } from 'react-redux'
 
 export default function Employees() {
 
@@ -17,11 +17,14 @@ export default function Employees() {
     { id: 'zipCode', label: 'Zip Code' }
   ]
 
+  const employees = useSelector(fetchAll)
+
+
   return (
     <>
       <h1>Current Employees</h1>
       <DataTable
-        data={ employesDataFromJSON.data }
+        data={ employees }
         columns={ dataTablesColumnsConfig }
       />
       <Link to='/'>Home</Link>

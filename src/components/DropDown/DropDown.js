@@ -37,8 +37,10 @@ export default function DropDown({ data, callback, options = {} }) {
       setIndexSelectedInList(defaultIndexValue)
     }
 
+    callback(defaultIndexValue !== -1 ? data[defaultIndexValue] : null)
+
     return () => document.body.removeEventListener('click', closeDropDownWhenClickOutside)
-  }, [isOpen, defaultIndexValue])
+  }, [isOpen, defaultIndexValue, callback, data])
 
   /**
    * Call a callback function of
@@ -252,7 +254,7 @@ export default function DropDown({ data, callback, options = {} }) {
   function handleKeyDown(event) {
     if(
       (
-        ['ArrowUp', 'ArrowDown', 'Home', 'End', 'PageUp', 'PageDown', 'Space'].includes(event.code) === false
+        ['ArrowUp', 'ArrowDown', 'Home', 'End', 'PageUp', 'PageDown', 'Space', 'Escape'].includes(event.code) === false
         && (event.keyCode < 65 || event.keyCode > 90) === true
       ) || event.ctrlKey === true
     ) {

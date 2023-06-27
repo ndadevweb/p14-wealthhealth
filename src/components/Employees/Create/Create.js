@@ -8,26 +8,30 @@ import { create } from '../../../features/employeesSlice'
 import stateDataFromJSON from '../../../data/state.json'
 import departmentDataFromJSON from '../../../data/department.json'
 
+import classes from './Create.module.css'
+
 export default function Create() {
 
   const [displayModal, setDisplayModal] = useState(false)
 
-  const [firstName, setFirstName] = useState(null)
-  const [lastName, setLastName] = useState(null)
+  const [errors, setErrors] = useState({})
 
-  const [dateOfBirth, setDateOfBirth] = useState('')
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
+
+  const [birthDate, setBirthDate] = useState('')
   const [activeDateOfBirthDatePicker, setActiveDateOfBirthDatePicker] = useState(false)
 
   const [startDate, setStartDate] = useState('')
   const [activeStartDateDatePicker, setActiveStartDateDatePicker] = useState(false)
 
-  const [street, setStreet] = useState(null)
-  const [city, setCity] = useState(null)
+  const [street, setStreet] = useState('')
+  const [city, setCity] = useState('')
 
-  const [state, setState] = useState(null)
-  const [department, setDepartment] = useState(null)
+  const [state, setState] = useState('')
+  const [department, setDepartment] = useState('')
 
-  const [zipCode, setZipCode] = useState(null)
+  const [zipCode, setZipCode] = useState('')
 
   const dispatch = useDispatch()
 
@@ -40,24 +44,82 @@ export default function Create() {
   function handleSubmit(event) {
     event.preventDefault()
 
+    const invalidFields = checkValues()
+
+    if(Object.keys(invalidFields).length > 0) {
+      setErrors(invalidFields)
+
+      return null
+    }
+
     const newEmployee = {
       firstName, lastName,
-      startDate, birthDate: dateOfBirth,
+      startDate, birthDate: birthDate,
       department, street, city, zipCode,
       state
     }
 
     dispatch(create(newEmployee))
     reset(event.target)
+    setErrors({})
+  }
+
+  function checkValues() {
+    const invalidFields = {}
+
+    if(firstName === '') {
+      invalidFields.firstName = "The 'First Name' field is required"
+    }
+
+    if(lastName === '') {
+      invalidFields.lastName = "The 'Last Name' field is required"
+    }
+
+    if(birthDate === '') {
+      invalidFields.birthDate = "The 'Date of birth' field is required"
+    } else if(/^\d{2}\/\d{2}\/\d{4}$/.test(birthDate) === false) {
+      invalidFields.birthDate = "The 'Date of birth' field must be a valid date {MM/DD/YYYY}"
+    }
+
+
+    if(startDate === '') {
+      invalidFields.startDate = "The 'Start Date' field is required"
+    } else if(/^\d{2}\/\d{2}\/\d{4}$/.test(startDate) === false) {
+      invalidFields.startDate = "The 'Start Date' field must be a valid date {MM/DD/YYYY}"
+    }
+
+    if(street === '') {
+      invalidFields.street = "The 'Street' field is required"
+    }
+
+    if(city === '') {
+      invalidFields.city = "The 'City' field is required"
+    }
+
+    if(state === '') {
+      invalidFields.state = "The 'State' field is required"
+    }
+
+    if(zipCode === '') {
+      invalidFields.zipCode = "The 'Zip Code' field is required"
+    } else if(isNaN(zipCode) === true) {
+      invalidFields.zipCode = "The 'Zip Code' field must be a number"
+    }
+
+    if(department === '') {
+      invalidFields.department = "The 'Department' field is required"
+    }
+
+    return invalidFields
   }
 
   function reset(target) {
     target.reset()
 
-    setDisplayModal(true)
+    setDisplayModal(false)
     setFirstName(null)
     setLastName(null)
-    setDateOfBirth('')
+    setBirthDate('')
     setStartDate('')
     setStreet(null)
     setCity(null)
@@ -71,13 +133,13 @@ export default function Create() {
    * of DatePicker
    *
    * @param {Date} newDate
-   * @param {String} type dateOfBirth | startDate
+   * @param {String} type birthDate | startDate
    * @throws new Error("Invalid 'type'")
    */
   function updateInputDate(newDate, type) {
     switch(type) {
-      case 'dateOfBirth':
-        setDateOfBirth(newDate)
+      case 'birthDate':
+        setBirthDate(newDate)
         setActiveDateOfBirthDatePicker(false)
       break
 
@@ -101,32 +163,35 @@ export default function Create() {
         <div>
           <label htmlFor="firstName">First Name</label>
           <input type="text" name="firstname" id="firstName" onInput={ event => setFirstName(event.target.value) } />
+          { errors.firstName && <span className={ classes.error }>{ errors.firstName }</span> }
         </div>
 
         <div>
           <label htmlFor="lastName">Last Name</label>
           <input type="text" name="lastname" id="lastName" onInput={ event => setLastName(event.target.value) } />
+          { errors.lastName && <span className={ classes.error }>{ errors.lastName }</span> }
         </div>
 
         <div>
-          <label htmlFor="dateOfBirth">Date of Birth</label>
+          <label htmlFor="birthDate">Date of Birth</label>
           <input
             type="text"
-            name="dateofbirth"
-            id="dateOfBirth"
-            value={ dateOfBirth }
-            onInput={ (event) => setDateOfBirth(event.target.value) }
+            name="birthdate"
+            id="birthDate"
+            value={ birthDate }
+            onInput={ (event) => setBirthDate(event.target.value) }
             onClick={ () => setActiveDateOfBirthDatePicker(activeDateOfBirthDatePicker === false) }
             autoComplete="off"
           />
           {
             activeDateOfBirthDatePicker === true
               ? <DatePicker
-                  dateSelected={ dateOfBirth }
-                  updateInputDate={ (newDate) => updateInputDate(newDate, 'dateOfBirth') }
+                  dateSelected={ birthDate }
+                  updateInputDate={ (newDate) => updateInputDate(newDate, 'birthDate') }
               />
               : null
-            }
+          }
+          { errors.birthDate && <span className={ classes.error }>{ errors.birthDate }</span> }
         </div>
 
         <div>
@@ -147,7 +212,8 @@ export default function Create() {
                   updateInputDate={ (newDate) => updateInputDate(newDate, 'startDate') }
               />
               : null
-            }
+          }
+          { errors.startDate && <span className={ classes.error }>{ errors.startDate }</span> }
         </div>
 
         <fieldset>
@@ -156,25 +222,30 @@ export default function Create() {
           <div>
             <label htmlFor="street">Street</label>
             <input type="text" name="street" id="street" onInput={ event => setStreet(event.target.value) } />
+            { errors.street && <span className={ classes.error }>{ errors.street }</span> }
           </div>
 
           <div>
-          <label htmlFor="city">City</label>
+            <label htmlFor="city">City</label>
             <input type="text" name="city" id="city" onInput={ event => setCity(event.target.value) } />
+            { errors.city && <span className={ classes.error }>{ errors.city }</span> }
           </div>
 
           <div>
-            <DropDown data={ stateDataFromJSON.data } callback={ (dataSelected) => setState(dataSelected.id) } options={ { labelName: 'State' } } />
+            <DropDown data={ stateDataFromJSON.data } callback={ (dataSelected) => setState(dataSelected.id) } options={ { labelName: 'State', defaultValueSelected: 'AL' } } />
+            { errors.state && <span className={ classes.error }>{ errors.state }</span> }
           </div>
 
           <div>
             <label htmlFor="zipCode">Zip Code</label>
-            <input type="number" name="zipcode" id="zipCode" onInput={ event => setZipCode(event.target.value) } />
+            <input type="text" name="zipcode" id="zipCode" onInput={ event => setZipCode(event.target.value) } />
+            { errors.zipCode && <span className={ classes.error }>{ errors.zipCode }</span> }
           </div>
         </fieldset>
 
         <div>
-          <DropDown data={ departmentDataFromJSON.data } callback={ (dataSelected) => { setDepartment(dataSelected.name) } } options={ { labelName:  'Department' } } />
+          <DropDown data={ departmentDataFromJSON.data } callback={ (dataSelected) => { setDepartment(dataSelected.name) } } options={ { labelName:  'Department', defaultValueSelected: 0 } } />
+          { errors.department && <span className={ classes.error }>{ errors.department }</span> }
         </div>
 
         <button type="submit">Save</button>

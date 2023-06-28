@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { isDateValid, dateToFormat } from './utils.js'
 import Header from './Header/Header'
 import DayNames from './DayNames/DayNames'
 import DayNumbers from './DayNumbers/DayNumbers'
@@ -26,49 +27,18 @@ export default function DatePicker({ dateSelected, updateInputDate }) {
     }
   }, [dateSelected])
 
-  function isDateValid(dateSelected) {
-    const pattern = /^\d{2}\/\d{2}\/\d{4}$/
-    const getTime = (new Date(dateSelected)).getTime()
-
-    return dateSelected.match(pattern) !== null && isNaN(getTime) === false
-  }
-
-  /**
-   * Update the date
-   *
-   * @param {Date} newDate
-   */
-  function updateDate(newDate) {
-    setCurrentDate(new Date(newDate))
-  }
-
-  /**
-   * Update the element uses the DatePicker component
-   *
-   * @param {Date} newDate
-   */
-  function updateInput(newDate) {
-    const dateFormatted = newDate.toLocaleString('en-US', {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit"
-    })
-
-    updateInputDate(dateFormatted)
-  }
-
   return (
     <div className={ classes.container }>
       <table>
         <thead>
           <Header
             dateSelected={ currentDate }
-            updateDate={ updateDate }
+            updateDate={ (newDate) => setCurrentDate(new Date(newDate)) }
           />
         </thead>
         <tbody>
           <DayNames />
-          <DayNumbers dateSelected={ currentDate } updateInputDate={ updateInput } />
+          <DayNumbers dateSelected={ currentDate } updateInputDate={ (newDate) => updateInputDate(dateToFormat(newDate)) } />
         </tbody>
       </table>
     </div>

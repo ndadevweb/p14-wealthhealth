@@ -11,10 +11,11 @@ import classes from './DatePicker.module.css'
  * @param {Object}   props
  * @param {Date}     props.dateSelected
  * @param {Function} props.updateInputDate
+ * @param {Object}   props.themes
  *
  * @returns <DatePicker dateSelected={ ... } updateInputDate={ ... } />
  */
-export default function DatePicker({ dateSelected, updateInputDate }) {
+export default function DatePicker({ dateSelected, updateInputDate, themes = {} }) {
 
   const defaultDate = new Date()
   const [currentDate, setCurrentDate] = useState(defaultDate)
@@ -27,18 +28,33 @@ export default function DatePicker({ dateSelected, updateInputDate }) {
     }
   }, [dateSelected])
 
+  function themeContainer() {
+    const classesList = [classes.container]
+
+    if(themes?.customThemeContainer !== undefined) {
+      classesList.push(themes.customThemeContainer)
+    }
+
+    return classesList.join(' ')
+  }
+
   return (
-    <div className={ classes.container }>
+    <div className={ themeContainer() }>
       <table>
         <thead>
           <Header
             dateSelected={ currentDate }
             updateDate={ (newDate) => setCurrentDate(new Date(newDate)) }
+            themes={ themes }
           />
         </thead>
         <tbody>
-          <DayNames />
-          <DayNumbers dateSelected={ currentDate } updateInputDate={ (newDate) => updateInputDate(dateToFormat(newDate)) } />
+          <DayNames themes={ themes } />
+          <DayNumbers
+            dateSelected={ currentDate }
+            updateInputDate={ (newDate) => updateInputDate(dateToFormat(newDate)) }
+            themes={ themes }
+          />
         </tbody>
       </table>
     </div>

@@ -21,6 +21,7 @@ export default function Years({ dateSelected, updateDate }) {
    */
   function handleChangeYear(year) {
     dateSelected.setFullYear(year)
+
     updateDate(dateSelected)
   }
 

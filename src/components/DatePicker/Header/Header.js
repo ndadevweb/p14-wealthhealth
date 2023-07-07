@@ -1,5 +1,7 @@
 import { default as SelectMonthNames } from '../MonthNames/MonthNames'
 import { default as SelectYears } from '../Years/Years'
+import triangleImage from '../assets/triangle.svg'
+import homeImage from '../assets/home.svg'
 import classes from './Header.module.css'
 
 /**
@@ -8,10 +10,11 @@ import classes from './Header.module.css'
  * @param {Object}   props
  * @param {Date}     props.dateSelected
  * @param {Function} props.updateDate
+ * @param {Object}   props.themes
  *
  * @returns <Header dateSelected={ ... } updateDate={ ... } />
  */
-export default function Header({ dateSelected, updateDate }) {
+export default function Header({ dateSelected, updateDate, themes }) {
 
   const INDEX_MONTH_DECEMBER = 11
   const INDEX_MONTH_JANUARY = 0
@@ -50,12 +53,27 @@ export default function Header({ dateSelected, updateDate }) {
     return dateSelected
   }
 
+  function themeActions() {
+    const classesList = [classes.actions]
+
+    if(themes?.customThemeButtonsAction !== undefined) {
+      classesList.push(themes?.customThemeButtonsAction)
+    }
+
+    return classesList.join(' ')
+  }
+
   return (
     <tr>
       <td colSpan={ 7 }>
-        <div className={ classes.actions }>
-          <button type="button" onClick={ () => updateDate(changePeriodToLeft()) }>{'<'}</button>
-          <button type="button" onClick={ () => updateDate(new Date()) }>🏠</button>
+        <div className={ themeActions() }>
+          <button type="button" className={ classes.buttonLeft } onClick={ () => updateDate(changePeriodToLeft()) }>
+            <img src={ triangleImage } className={ classes.triangleLeft } alt="Left" />
+          </button>
+
+          <button type="button" onClick={ () => updateDate(new Date()) }>
+            <img src={ homeImage } className={ classes.home } alt="Home" />
+          </button>
 
           <SelectMonthNames
             dateSelected={ dateSelected }
@@ -67,7 +85,9 @@ export default function Header({ dateSelected, updateDate }) {
             updateDate={ updateDate }
           />
 
-          <button type="button" onClick={ () => updateDate(changePeriodToRight()) }>{'>'}</button>
+          <button type="button" className={ classes.buttonRight} onClick={ () => updateDate(changePeriodToRight()) }>
+            <img src={ triangleImage } className={ classes.trianglerRight } alt="Right" />
+          </button>
         </div>
       </td>
     </tr>

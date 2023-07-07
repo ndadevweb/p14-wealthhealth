@@ -11,26 +11,25 @@
   font-size: .8rem;
   padding-right: 5px;
   border: 1px solid #ddd;
-  border-radius: 3px;
   background: #eee;
   display: flex;
   justify-content: flex-end;
   align-items: center;
 }
 
-.day.daySelected {
+.daySelected {
   color: #FFF;
   background: orange;
   font-weight: bold;
 }
 
 .day:hover,
-.day.daySelected:hover {
+.daySelected:hover {
   color: #FFF;
   background: dodgerblue;
   cursor: pointer;
 }
 
-.day.anotherMonth {
+.dayAnotherMonth {
   opacity: .5;
 }

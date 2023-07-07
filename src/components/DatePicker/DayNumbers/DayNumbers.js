@@ -10,7 +10,7 @@ import DayRow from './DayRow/DayRow'
  *
  * @returns <DayNumbers dateSelected={ ... } updateInputDate={ ... } />
  */
-export default function DayNumbers({ dateSelected, updateInputDate }) {
+export default function DayNumbers({ dateSelected, updateInputDate, themes }) {
 
   /**
    * Handle click to select day in the calendar
@@ -51,6 +51,7 @@ export default function DayNumbers({ dateSelected, updateInputDate }) {
             dateSelected={ dateSelected }
             handleClickSelectDay={ event => handleClickSelectDay(event) }
             handleKeySelectDay={ event => handleKeySelectDay(event) }
+            themes={ themes }
           />
         ))
       }

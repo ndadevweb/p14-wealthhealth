@@ -22,6 +22,7 @@ export default function MonthNames({ dateSelected, updateDate }) {
    */
   function handleChangeMonth(indexOfMonth) {
     dateSelected.setMonth(indexOfMonth)
+
     updateDate(dateSelected)
   }
 

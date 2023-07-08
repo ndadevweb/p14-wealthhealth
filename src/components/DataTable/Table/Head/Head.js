@@ -20,7 +20,7 @@ export default function Head({ columns, updateSortByColumn, sortByColumn }) {
 
   return (
     <thead>
-      <tr onClick={ (event) => handleClick(event) }>
+      <tr>
         {
           columns.map((column, index) => (
               <th
@@ -34,6 +34,7 @@ export default function Head({ columns, updateSortByColumn, sortByColumn }) {
                     ? sortByColumn.orderBy
                     : null
                 }
+                onClick={ (event) => handleClick(event) }
               >
                 <div>
                   <span>{ column.label }</span>

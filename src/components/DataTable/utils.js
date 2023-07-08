@@ -36,7 +36,12 @@ export function getEntries(data, entriesPerPage, page) {
   if(page <= 1) {
     dataFiltered = [...data.filter((_, index) => index < entriesPerPage)]
 
-    fromEntry = 1
+    const dataFilteredLength = dataFiltered.length
+
+    fromEntry = dataFilteredLength > 0
+      ? 1
+      : 0
+    toEntry = dataFilteredLength
   } else {
     let fromIndex = (page - 1) * entriesPerPage
     let toIndex = (page * entriesPerPage) - 1
@@ -49,10 +54,13 @@ export function getEntries(data, entriesPerPage, page) {
       dataFiltered.push(data[index])
     }
 
-    fromEntry = fromIndex + 1
-  }
+    const dataFilteredLength = dataFiltered.length
 
-  toEntry = dataFiltered.length
+    fromEntry = fromIndex + 1
+    toEntry = dataFilteredLength === entriesPerPage
+      ? fromIndex + entriesPerPage
+      : fromEntry - 1 + dataFilteredLength
+  }
 
   return {
     dataFiltered: dataFiltered,

@@ -1,3 +1,4 @@
+import { themeOverlay, themeModal, themeContent, themeButtonClose } from './utils'
 import classes from './Modal.module.css'
 
 /**
@@ -7,20 +8,27 @@ import classes from './Modal.module.css'
  * @param {Object}   props.children
  * @param {Boolean}  props.open
  * @param {Function} props.callbackClose
+ * @param {String}   props.labelButton (optional)
+ * @param {Object}   props.themes (optional)
  *
- * @returns <Modal open{ ... } />
+ * @returns <Modal open{ ... } callbackClose={ ... } labelButton={ ... } themes={ ... } />
  */
-export default function Modal({ children, open, callbackClose }) {
+export default function Modal({ children, open, callbackClose, labelButton, themes }) {
 
   if(open === false) {
     return null
   }
 
   return (
-    <div className={ classes.overlay+' '+classes.open } onClick={ () => callbackClose() }>
-      <div role="dialog" className={ classes.modal } onClick={ (event) => event.stopPropagation() }>
-        <button type="button" className={ classes.close } onClick={ () => callbackClose() }>✖</button>
-        { children }
+    <div className={ themeOverlay(themes, classes) } onClick={ () => callbackClose() }>
+      <div role="dialog" className={ themeModal(themes, classes) } onClick={ (event) => event.stopPropagation() }>
+        <div className={ themeContent(themes, classes) }>
+          { children }
+        </div>
+
+        <button type="button" className={ themeButtonClose(themes, classes) } onClick={ () => callbackClose() }>
+          { labelButton || '✖' }
+        </button>
       </div>
     </div>
   )

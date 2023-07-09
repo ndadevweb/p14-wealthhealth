@@ -27,7 +27,11 @@
   box-shadow: 0 0 10px #000;
 }
 
-.modal .close {
+.content {
+  margin: 10px 0;
+}
+
+.buttonClose {
   position: absolute;
   top: -10px;
   right: -10px;

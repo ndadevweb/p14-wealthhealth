@@ -4,6 +4,7 @@ import {
   MAX_ENTRIES_50,
   MAX_ENTRIES_100
 } from '../constants'
+import { customTheme } from '../utils'
 
 /**
  * Component to display the available options to show
@@ -18,10 +19,11 @@ import {
  * @param {object}   props
  * @param {Number}   props.entriesToDisplay
  * @param {Function} props.updateEntriesToDisplay
+ * @param {Object}   props.themes
  *
- * @returns <ShowEntries entriesToDisplay{ ... } updateEntriesToDisplay={ ... } />
+ * @returns <ShowEntries entriesToDisplay{ ... } updateEntriesToDisplay={ ... } themes={ ... } />
  */
-export default function ShowEntries({ entriesToDisplay, updateEntriesToDisplay }) {
+export default function ShowEntries({ entriesToDisplay, updateEntriesToDisplay, themes }) {
 
   const optionsAvailable = [
     MAX_ENTRIES_10,
@@ -61,7 +63,7 @@ export default function ShowEntries({ entriesToDisplay, updateEntriesToDisplay }
   }
 
   return (
-    <div>
+    <div className={ customTheme(themes, [], 'customThemeShowEntriesContainer') }>
       <span>Show </span>
       <select defaultValue={ defaultIndexValue(entriesToDisplay) } onChange={ (event) => handleUpdateEntriesToDisplay(event.target.value) }>
         {

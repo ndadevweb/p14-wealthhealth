@@ -1,31 +1,54 @@
+import { customTheme } from '../../utils'
 import classes from './Head.module.css'
 
 /**
  * head that will contain the data
+ *
+ * It is possible to navigate with key Tab inside th
+ *  and sort data with key Space
  *
  * @param {Object}   props
  * @param {Array}    props.columns
  * @param {Function} props.updateSortByColumn
  * @param {String}   props.sortByColumn
  *
- * @returns <Head columns={ ... } updateSortByColumn={ ... } sortByColunm={ ... } />
+ * @returns <Head columns={ ... } updateSortByColumn={ ... } sortByColunm={ ... }  themes={ ... } />
  */
-export default function Head({ columns, updateSortByColumn, sortByColumn }) {
+export default function Head({ columns, updateSortByColumn, sortByColumn, themes }) {
 
+  /**
+   * Sort data when click on the column
+   *
+   * @param {Event} event
+   */
   function handleClick(event) {
     const { column, order } = event.target.closest('[data-type]').dataset
 
     updateSortByColumn(column, order)
   }
 
+  /**
+   * Sort data when key Space pressed on the column
+   *
+   * @param {Event} event
+   */
+  function handleKeyUp(event) {
+    if(event.code !== 'Space') {
+      return null
+    }
+
+    const { column, order } = event.target.closest('[data-type]').dataset
+
+    updateSortByColumn(column, order)
+  }
+
   return (
-    <thead>
+    <thead className={ customTheme(themes, [], 'customThemeContainerHead') }>
       <tr>
         {
           columns.map((column, index) => (
               <th
-                tabIndex="0"
-                className={ classes.cellHead }
+                className={ customTheme(themes, [classes.cellHead], 'customThemeCellHead') }
                 key={ index }
                 data-type="head"
                 data-column={ column.id }
@@ -35,10 +58,11 @@ export default function Head({ columns, updateSortByColumn, sortByColumn }) {
                     : null
                 }
                 onClick={ (event) => handleClick(event) }
+                onKeyUp={ (event) => handleKeyUp(event) }
               >
-                <div>
+                <div tabIndex="0">
                   <span>{ column.label }</span>
-                  <span className={ classes.iconsSorting }>
+                  <span className={ customTheme(themes, [classes.iconsSorting], 'customThemeContainerHeadIconSorting') }>
                     <i>▲</i>
                     <i>▼</i>
                   </span>

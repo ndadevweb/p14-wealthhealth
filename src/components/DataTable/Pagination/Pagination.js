@@ -1,3 +1,4 @@
+import { customTheme } from '../utils'
 import classes from './Pagination.module.css'
 
 /**
@@ -8,14 +9,16 @@ import classes from './Pagination.module.css'
  * @param {Array}    props.entriesToDisplay
  * @param {Number}   props.currentPage
  * @param {Function} props.updateCurrentPage
+ * @param {Object}   props.themes (optional)
  *
  * @returns <Pagination
  *            totalEntries={ ... }
  *            entriesToDisplay={ ... }
  *            currentPage={ ... } updateCurrentPage={ ... }
+ *            themes={ ... }
  *          />
  */
-export default function Pagination({ totalEntries, entriesToDisplay, currentPage, updateCurrentPage }) {
+export default function Pagination({ totalEntries, entriesToDisplay, currentPage, updateCurrentPage, themes }) {
 
   const totalPages = Math.ceil(totalEntries / entriesToDisplay)
 
@@ -24,11 +27,10 @@ export default function Pagination({ totalEntries, entriesToDisplay, currentPage
   }
 
   return (
-    <div>
+    <div className={ customTheme(themes, [classes.container], 'customThemePaginationContainer') }>
       <button
         type="button"
         disabled={ currentPage <= 1 }
-        className={ classes.button }
         onClick={ () => currentPage > 1 ? updateCurrentPage(currentPage - 1) : null }
       >
         Previous
@@ -37,7 +39,6 @@ export default function Pagination({ totalEntries, entriesToDisplay, currentPage
       <button
         type="button"
         disabled={ currentPage === totalPages }
-        className={ classes.button }
         onClick={ () => currentPage < totalPages ? updateCurrentPage(currentPage + 1) : null }
       >
         Next

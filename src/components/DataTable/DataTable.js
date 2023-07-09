@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { MAX_ENTRIES_10 as MAX_DEFAULT_ENTRIES } from './constants'
 import { ORDER_BY_ASC, ORDER_BY_DESC } from './constants'
-import { getEntries, sortDataByColumn, sortDataByValue } from './utils'
+import { customTheme, getEntries, sortDataByColumn, sortDataByValue } from './utils'
 import ShowEntries from './ShowEntries/ShowEntries'
 import Search from './Search/Search'
 import Table from './Table/Table'
@@ -16,10 +16,11 @@ import classes from './DataTable.module.css'
  * @param {Array}  props.data
  * @param {Array}  props.columns
  * @param {Number} props.maxDefaultTotalEntries
+ * @param {Object} props.themes (optional)
  *
  * @returns <DataTable data={ ... } columns={ ... } maxDefaultEntries={ ... } />
  */
-export default function DataTable({ data, columns, maxDefaultEntries }) {
+export default function DataTable({ data, columns, maxDefaultEntries, themes }) {
 
   const defaultColumnToSort = columns
     .filter(column => column.hasOwnProperty('order'))
@@ -36,6 +37,11 @@ export default function DataTable({ data, columns, maxDefaultEntries }) {
 
   const [currentPage, setCurrentPage] = useState(1)
 
+  /**
+   * Use to sort data by an interaction with a column
+   *
+   * @param {String} column
+   */
   function handleSortBy(column) {
     const newSortBy = { id: column }
 
@@ -48,15 +54,7 @@ export default function DataTable({ data, columns, maxDefaultEntries }) {
     setSortBy(newSortBy)
   }
 
-
-  // 1 - trier par colonne selectionnee ( state pour conserver colonne et type de tri )
-  // 2 - trier par valeur du champs search ( state pour conserver valeur saisie )
-  // 3 - trier les donnees par nombre d'items a afficher
-
-
-  const defaultDataLength = data.length
-
-  const dataSorted = defaultDataLength > 0
+  const dataSorted = data.length > 0
     ? sortDataByColumn(data, columns, sortBy.id, sortBy.orderBy)
     : []
 
@@ -64,38 +62,44 @@ export default function DataTable({ data, columns, maxDefaultEntries }) {
 
   const { dataFiltered, fromEntry, toEntry } = getEntries(dataSortedByValue, entriesToDisplay, currentPage)
 
+
   return (
-    <div className={ classes.container }>
-      <div className={ classes.header }>
+    <div className={ customTheme(themes, [classes.container], 'customThemeContainer') }>
+      <div className={ customTheme(themes, [classes.header], 'customThemeContainerHeader') }>
         <ShowEntries
           entriesToDisplay={ entriesToDisplay }
           updateEntriesToDisplay={ (number) => setEntriesToDisplay(number) }
+          themes={ themes }
         />
         <Search
           updateSearchValue={ (value) => setSearchValue(value) }
+          themes={ themes }
         />
       </div>
 
-      <div className={ classes.data }>
+      <div className={ customTheme(themes, [classes.data], 'customThemeContainerData') }>
         <Table
           columns={ columns }
           data={ dataFiltered }
           sortByColumn={ sortBy }
           updateSortByColumn={ (column, order) => handleSortBy(column, order) }
+          themes={ themes }
         />
       </div>
 
-      <div className={ classes.footer }>
+      <div className={ customTheme(themes, [classes.footer], 'customThemeContainerFooter') }>
         <ShowingEntries
           totalEntries={ totalEntries }
           fromEntry={ fromEntry }
           toEntry={ toEntry }
+          themes={ themes }
         />
         <Pagination
           totalEntries={ totalEntries }
           entriesToDisplay={ entriesToDisplay }
           currentPage={ currentPage }
           updateCurrentPage= { (number) => setCurrentPage(number) }
+          themes={ themes }
         />
       </div>
     </div>

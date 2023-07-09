@@ -1,4 +1,9 @@
-.button {
+.container {
+  display: flex;
+  gap: 5px;
+}
+
+.container button {
   padding: 10px;
   border: 1px solid #AAA;
   border-radius: 3px;
@@ -6,17 +11,17 @@
   cursor: pointer;
 }
 
-.button:hover {
+.container button:hover {
   background: #DDD;
 }
 
-.button[disabled] {
+.container button[disabled] {
   cursor: not-allowed;
   border: 1px solid #DDD;
   background: #EEE;
 }
 
-.button.buttonPage {
+.container button.buttonPage {
   width: 2.2rem;
   height: 2.2rem;
 }

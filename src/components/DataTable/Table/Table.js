@@ -1,3 +1,4 @@
+import { customTheme } from '../utils'
 import Body from './Body/Body'
 import Head from './Head/Head'
 
@@ -12,14 +13,21 @@ import classes from './Table.module.css'
  * @param {String}   props.sortByColumn
  * @param {Function} props.updateSortByColumn
  *
- * @returns <Table columns={ ... } data={ ... } sortByColumn={ ... } updateSortByColumn={ ... } />
+ * @returns <Table
+ *            columns={ ... }
+ *            data={ ... }
+ *            sortByColumn={ ... }
+ *            updateSortByColumn={ ... }
+ *            themes={ ... } />
  */
-export default function Table({ columns, data, sortByColumn, updateSortByColumn }) {
+export default function Table({ columns, data, sortByColumn, updateSortByColumn, themes }) {
 
   return (
-    <table className={ classes.table }>
-      <Head columns={ columns } sortByColumn={ sortByColumn } updateSortByColumn={ updateSortByColumn } />
-      <Body numberOfColumns={ columns.length } data={ data } />
-    </table>
+    <div className={ classes.tableContainer }>
+      <table className={ customTheme(themes, [classes.table], 'customThemeTable') }>
+        <Head columns={ columns } sortByColumn={ sortByColumn } updateSortByColumn={ updateSortByColumn } themes={ themes } />
+        <Body numberOfColumns={ columns.length } data={ data } themes={ themes } />
+      </table>
+    </div>
   )
 }

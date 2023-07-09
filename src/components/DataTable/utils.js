@@ -207,3 +207,22 @@ export function sortDataByValue(data, columns, value) {
     totalEntries: newData.length
   }
 }
+
+/**
+ * Return a list of css classes to custom a component
+ *
+ * @param {Object} themes An object themes with custom classes
+ * @param {Array} componentClasses component default css classes
+ * @param {String} classNameToAdd name of the class use to override
+ *
+ * @returns {String}
+ */
+export function customTheme(themes, componentClasses, classNameToAdd) {
+  const classesList = [...componentClasses]
+
+  if(themes?.[classNameToAdd] !== undefined) {
+    classesList.push(themes[classNameToAdd])
+  }
+
+  return classesList.join(' ')
+}

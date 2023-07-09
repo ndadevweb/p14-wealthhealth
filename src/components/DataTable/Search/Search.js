@@ -1,3 +1,4 @@
+import { customTheme } from '../utils'
 import classes from './Search.module.css'
 
 /**
@@ -5,10 +6,11 @@ import classes from './Search.module.css'
  *
  * @param {Object}   props
  * @param {Function} props.updateSearchValue
+ * @param {Object}   props.themes
  *
  * @returns <Search updateSearchValue={ ... } />
  */
-export default function Search({ updateSearchValue }) {
+export default function Search({ updateSearchValue, themes }) {
 
   /**
    * Handle to search value
@@ -22,8 +24,8 @@ export default function Search({ updateSearchValue }) {
   }
 
   return (
-    <div>
-      <label htmlFor="search">Search :</label>
+    <div className={ customTheme(themes, [classes.container], 'customThemeSearchContainer') }>
+      <label htmlFor="search">Search</label>
       <input type="text" id="search" onInput={ handleInput }/>
     </div>
   )

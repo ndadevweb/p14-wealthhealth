@@ -1,3 +1,4 @@
+import { customTheme } from '../utils'
 
 /**
  * Show details about the number entries to display
@@ -9,11 +10,11 @@
  *
  * @returns <ShowingEntries totalEntries={ ... } />
  */
-export default function ShowingEntries({ totalEntries, fromEntry, toEntry }) {
+export default function ShowingEntries({ totalEntries, fromEntry, toEntry, themes }) {
 
   return (
-    <p>
-      Showing { fromEntry } to { toEntry } of { totalEntries } entries
+    <p className={ customTheme(themes, [], 'customShowingEntriesContainer') }>
+      Showing <span>{ fromEntry }</span> to <span>{ toEntry }</span> of <span>{ totalEntries }</span> entries
     </p>
   )
 }

@@ -1,3 +1,4 @@
+import { customTheme } from '../../utils'
 import classes from './Body.module.css'
 
 /**
@@ -6,17 +7,18 @@ import classes from './Body.module.css'
  * @param {Object} props
  * @param {Number} props.numberOfColumns
  * @param {Array}  props.data
+ * @param {Object} props.themes (optional)
  *
- * @returns <Body { numberOfColumns={ ... } data={ ... } />
+ * @returns <Body { numberOfColumns={ ... } data={ ... } themes={ ... } />
  */
-export default function Body({ numberOfColumns, data }) {
+export default function Body({ numberOfColumns, data, themes }) {
 
   return (
-    <tbody>
+    <tbody className={ customTheme(themes, [], 'customThemeContainerBody') }>
       {
         data.length === 0 ? (
           <tr>
-            <td colSpan={ numberOfColumns } className={ classes.empty }>
+            <td colSpan={ numberOfColumns } className={ customTheme(themes, [classes.empty], 'customThemeBodyEmpty') }>
               No data available in table
             </td>
           </tr>

@@ -19,10 +19,10 @@ It can receive 4 arguments including 2 optional
 
 In your component
 
-**id** => identifies the ownership of the injected data
-**label** label to display in the table head
-**order** => asc | desc
-**type** => date
+- **id** => identifies the ownership of the injected data
+- **label** label to display in the table head
+- **order** => asc | desc
+- **type** => date
 
 ```
 import DataTable from './components/DataTable'

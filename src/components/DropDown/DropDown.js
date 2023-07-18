@@ -1,354 +1,293 @@
-import { useRef, useState, useEffect } from 'react'
+import { useEffect, useState, useId, useRef } from 'react'
+import {
+  allowedKeysWhenClosed, allowedKeysWhenOpen,
+  customTheme,
+  getIndexDataByKeyCode
+} from './utils'
 import classes from './DropDown.module.css'
 
 /**
- * DropDown component
+ * Display a DropDown component
  *
- * @param {Object}        props
- * @param {Array<Object>} props.data
- * @param {Function}      props.callback
- * @param {Object}        props.options ( labelName )
+ * @param {Object}   props
+ * @param {Object}   props.data          Data to hydrate dropdown values
+ * @param {Function} props.updateValue   Callback to update the parent component's state
+ * @param {String}   props.labelName     (optional) Text of the label (if empty the label will be not displayed)
+ * @param {Object}   props.mapProperties (optional) Map properties of the data
+ * @param {Object}   props.themes        (optional) Theme to custom component
  *
- * @returns <DropDown data={ ... } callback={ ... } options={ ... } />
+ * @returns <DropDown
+ *            data={ ... }
+ *            currentValue={ ... }
+ *            updateValue={ ... }
+ *            labelName={ ... }
+ *            mapProperties{ ... }
+ *            themes={ ... } />
  */
-export default function DropDown({ data, callback, options = {} }) {
+export default function DropDown({
+  data,
+  currentValue,
+  updateValue,
+  labelName,
+  mapProperties = { value: 'value', text: 'text' },
+  themes = {}
+}) {
 
-  const { defaultValueSelected, labelName } = options
-  const defaultIndexValueIfExists = data.findIndex(item => item.id === defaultValueSelected)
+  const defaultIndex = data.findIndex(currentData => currentData[mapProperties['value']] === currentValue[mapProperties['value']])
 
-  // index of a confirmed value
-  const [defaultIndexValue, setDefaultIndexValue] = useState(
-    defaultIndexValueIfExists !== -1 ? defaultIndexValueIfExists : 0
-  )
-
-  // index of an element selected by mouse over or keyboard and not confirmed
-  const [indexSelectedInList, setIndexSelectedInList] = useState(defaultIndexValue)
-  const [indexesSearchWord, setIndexesSearchWord] = useState({ letter: null, indexes: [], current: null})
-  const [isOpen, setOpen] = useState(false)
-
+  // Used to identify the different dropdown when there are several
+  const dropdownID = 'dropdown-'+useId()
   const refButton = useRef(null)
-  const refList = useRef(null)
+  const refItem = useRef([])
+
+  const [open, setOpen] = useState(false)
+  const [indexSelectedItem, setIndexSelectedItem] = useState(defaultIndex)
+  const [indexHoveredItem, setIndexHoveredItem] = useState(defaultIndex)
 
   useEffect(() => {
-    if(isOpen === true) {
-      document.body.addEventListener('click', closeDropDownWhenClickOutside)
-
-      // prevents the positioning of the focus on a selected and unconfirmed element
-      setIndexSelectedInList(defaultIndexValue)
+    /**
+     * Selected the item inside the list
+     */
+    function scrollToItemSelected() {
+      const itemSelected = refItem.current[indexSelectedItem]
+      itemSelected.scrollIntoView({ behavior: 'smooth', block: 'center' })
     }
 
-    callback(defaultIndexValue !== -1 ? data[defaultIndexValue] : null)
+    /**
+     * Close dropdown when click outside itself
+     *
+     * @param {Event} event
+     */
+    function closeDropDown(event) {
+      const dataAttribute = `[data-dropdown="${dropdownID}"]`
 
-    return () => document.body.removeEventListener('click', closeDropDownWhenClickOutside)
-  }, [isOpen, defaultIndexValue, callback, data])
-
-  /**
-   * Call a callback function of
-   * the parent component
-   *
-   * @param {Number} index
-   */
-  function execCallback(index) {
-    if(callback) {
-      callback({
-        id: data[index].id,
-        name: data[index].name
-      })
+      if(event.target.closest(dataAttribute) === null) {
+        setOpen(() => false)
+      }
     }
-  }
+
+    if(open === true) {
+      document.body.addEventListener('click', closeDropDown)
+
+      scrollToItemSelected()
+    }
+
+    return () => document.body.removeEventListener('click', closeDropDown)
+  }, [open, indexSelectedItem, dropdownID])
 
   /**
-   * Close the DropDown component when
-   * a click mouse is outside
+   * Set the focus on the dropdown
+   * when the label element is clicked
    *
    * @param {Event} event
    */
-  function closeDropDownWhenClickOutside(event) {
-    if(event.target.closest('div[data-name="dropdown"]') === null) {
-      setOpen(false)
-    }
-  }
-
-  /**
-   * Add focus on the button when the
-   * label is clicked
-   */
-  function handleClickLabel() {
+  function handleClickLabel(event) {
     refButton.current.focus()
   }
 
   /**
-   * Keyboard keys that can be used when the DropDown
-   * component is in closed status
-   *
-   * Keys allowed
-   * - A between Z : to find a word starts with the letter used
-   * - Space : to open the DropDown list
-   * - Home / PageUp : to select first word in the list
-   * - End / PageDown : to select last word in the list
-   * - ArrowUp / ArrowDown : to navigate from word to word
+   * Close the dropdown when the user
+   * leave the component
    *
    * @param {Event} event
    */
-  async function actionsAllowedWhenIsClosed(event) {
-    if(event.code === 'Space') {
-      setOpen(true)
+  function handleBlur(event) {
+    const dataAttribute = `[data-dropdown="${dropdownID}"]`
 
-      // place the focus on the previously selected element
-      const refLi = await refList.current.children[defaultIndexValue]
-      refList.current.scroll(0, refLi.offsetTop)
+    if(event?.relatedTarget?.closest(dataAttribute)?.dataset?.dropdown !== dropdownID) {
+      setIndexHoveredItem(() => indexSelectedItem)
+      setOpen(() => false)
     }
-
-    if(['Home', 'PageUp'].includes(event.code) === true) {
-      setDefaultIndexValue(0)
-      setIndexSelectedInList(0)
-      execCallback(0)
-    } else if(['End', 'PageDown'].includes(event.code) === true) {
-      const lastIndex = data.length - 1
-
-      setDefaultIndexValue(lastIndex)
-      setIndexSelectedInList(lastIndex)
-      execCallback(lastIndex)
-    }
-
-    if(event.code === 'ArrowUp') {
-      const newIndex = defaultIndexValue === 0
-        ? defaultIndexValue
-        : defaultIndexValue - 1
-
-      setDefaultIndexValue(newIndex)
-      setIndexSelectedInList(newIndex)
-      execCallback(newIndex)
-    } else if(event.code === 'ArrowDown') {
-      const newIndex = defaultIndexValue === data.length - 1
-        ? defaultIndexValue
-        : defaultIndexValue + 1
-
-      setDefaultIndexValue(newIndex)
-      setIndexSelectedInList(newIndex)
-      execCallback(newIndex)
-    }
-
-    searchWordByFirstLetter(event)
   }
 
   /**
-   * Keyboard keys that can be used when the DropDown
-   * component is in open status
-   *
-   * Keys allowed
-   * - A between Z : to find a word starts with the letter used
-   * - Space : to close the DropDown list and select a word in the list
-   * - Escape: to close the DropDown without select a word in the list
-   * - Home / PageUp : to select first word in the list
-   * - End / PageDown : to select last word in the list
-   * - ArrowUp / ArrowDown : to navigate from word to word
+   * Handle the open / close dropdown
+   * when clicked
+   */
+  function handleClickButton() {
+    const mapPropertyValue = mapProperties['id']
+    const newIndexSelectedItem = data.findIndex(currentData => currentData[mapPropertyValue] === currentValue[mapPropertyValue])
+
+    setIndexSelectedItem(() => newIndexSelectedItem)
+    setIndexHoveredItem(() => newIndexSelectedItem)
+
+    const itemSelected = refItem.current[newIndexSelectedItem]
+    itemSelected.scrollIntoView({ behavior: 'smooth', block: 'center' })
+
+    setOpen(() => open === false)
+  }
+
+  /**
+   * Handle the interactions by keyboards keys
    *
    * @param {Event} event
    */
-  function actionsAllowedWhenIsOpen(event) {
-    event.preventDefault()
-
-    if(event.code === 'Space') {
-      setDefaultIndexValue(indexSelectedInList)
-      execCallback(indexSelectedInList)
+  function handleKeyDownButton(event) {
+    if(open === false && allowedKeysWhenClosed().includes(event.code) === true) {
+      event.preventDefault()
+      buttonInteractionsAllowedWhenClosed(event.code)
+    } else if(open === true && allowedKeysWhenOpen().includes(event.code) === true) {
+      event.preventDefault()
+      buttonInteractionsAllowedWhenOpen(event.code)
     }
+  }
 
-    if(['Space', 'Escape'].includes(event.code) === true) {
-      setOpen(false)
-      setIndexSelectedInList(defaultIndexValue)
+  /**
+   * Handle the interactions by keyboards keys
+   * when the dropdown is closed
+   *
+   * Update the value when an item is selected by keyboards keys
+   * ArrowUp, ArrowDown, Home, End, PageUp or PageDown keys
+   *
+   * Open the dropdown with Space key
+   *
+   * @param {String} keyCode
+   */
+  function buttonInteractionsAllowedWhenClosed(keyCode) {
+    if(['ArrowUp', 'ArrowDown', 'Home', 'End', 'PageUp', 'PageDown'].includes(keyCode) === true) {
+      const newIndexSelectedItem = getIndexDataByKeyCode(data, currentValue, keyCode)
+      const newData = data[newIndexSelectedItem]
+
+      updateValue(() => newData)
+      setIndexSelectedItem(() => newIndexSelectedItem)
+      setIndexHoveredItem(() => newIndexSelectedItem)
+    } else if(keyCode === 'Space') {
+      setOpen(() => true)
     }
+  }
 
-    if(['Home', 'PageUp'].includes(event.code) === true) {
-      setIndexSelectedInList(0)
+  /**
+   * Handle the interactions by keyboards keys
+   * when the dropdown is open
+   *
+   * Highlight the item when is hovered by keyboards keys
+   * ArrowUp, ArrowDown, Home, End, PageUp or PageDown
+   *
+   * Close the dropdown with Escape key
+   *
+   * Update the value when an item is selected with Space key
+   *
+   * @param {String} keyCode
+   */
+  function buttonInteractionsAllowedWhenOpen(keyCode) {
+    if(['ArrowUp', 'ArrowDown', 'Home', 'End', 'PageUp', 'PageDown'].includes(keyCode) === true) {
+      // Value selected before change
+      const currentValueSelected = data[indexHoveredItem]
 
-      // place the focus on the previously selected element
-      refList.current.scroll(0, 0)
-    } else if(['End', 'PageDown'].includes(event.code) === true) {
-      setIndexSelectedInList(data.length - 1)
+      // It will be the new index after key pressed
+      const newIndex = getIndexDataByKeyCode(data, currentValueSelected, keyCode)
 
-      // place the focus on the previously selected element
-      const refLi = refList.current.children[data.length - 1]
-      refList.current.scroll(0, refLi.offsetTop)
-    }
+      // Currently selected item
+      const itemSelected = refItem.current[indexHoveredItem]
 
-    if(event.code === 'ArrowUp') {
-      const newIndex = indexSelectedInList === 0
-        ? indexSelectedInList
-        : indexSelectedInList - 1
-
-      setIndexSelectedInList(newIndex)
-
-      // place the focus on the previously selected element
-      const refLi = refList.current.children[newIndex]
-      if(refLi.offsetTop >= 0) {
-        refList.current.scroll(0, refLi.offsetTop)
+      if(keyCode === 'ArrowUp') {
+        itemSelected.previousElementSibling?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      } else if(keyCode === 'ArrowDown') {
+        itemSelected.nextElementSibling?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      } else if(['Home', 'PageUp', 'End', 'PageDown'].includes(keyCode) === true) {
+        const itemSelected = refItem.current[newIndex]
+        itemSelected.scrollIntoView({ behavior: 'smooth', block: 'center' })
       }
 
-    } else if(event.code === 'ArrowDown') {
-      const newIndex = indexSelectedInList === data.length - 1
-        ? indexSelectedInList
-        : indexSelectedInList + 1
+      setIndexHoveredItem(() => newIndex)
+    } else if(keyCode === 'Escape') {
+      const newIndexSelectedItem = getIndexDataByKeyCode(data, currentValue, keyCode)
 
-      setIndexSelectedInList(newIndex)
+      setIndexSelectedItem(() => newIndexSelectedItem)
+      setIndexHoveredItem(() => newIndexSelectedItem)
+      setOpen(() => false)
+    } else if(keyCode === 'Space') {
+      const newData = data[indexHoveredItem]
 
-      // place the focus on the previously selected element
-      const refLi = refList.current.children[newIndex]
-      if(refList.current.clientHeight - refLi.offsetTop <= refLi.clientHeight) {
-        const index = +refLi.dataset.index
-        refList.current.scroll(0, (index * refLi.clientHeight) - (refList.current.clientHeight - refLi.clientHeight))
-      }
-    }
-
-    searchWordByFirstLetter(event)
-  }
-
-  /**
-   * Key A between Z to select a word in the DropDown list
-   *
-   * @param {Event} event
-   */
-  function searchWordByFirstLetter(event) {
-
-    if(event.keyCode < 65 || event.keyCode > 90) {
-      return null
-    }
-
-    const letter = event.key.toLowerCase()
-    const newIndexesSearchWord = { ...indexesSearchWord }
-
-    if(newIndexesSearchWord.current === null || newIndexesSearchWord.letter !== letter) {
-      newIndexesSearchWord.letter = letter
-      newIndexesSearchWord.indexes = data.map((item, index) => ({ item, index }))
-        .filter(({ item }) => item.name.toLowerCase().startsWith(letter) ===  true)
-        .map(item => item.index)
-      newIndexesSearchWord.current = newIndexesSearchWord.indexes[0]
-    } else if(newIndexesSearchWord.current === newIndexesSearchWord.indexes[newIndexesSearchWord.indexes.length - 1]) {
-      newIndexesSearchWord.current = newIndexesSearchWord.indexes[0]
-    } else {
-      newIndexesSearchWord.current += 1
-    }
-
-    if(newIndexesSearchWord.indexes.length === 0) {
-      setIndexesSearchWord({ letter: null, indexes: [], current: null })
-    } else {
-      setIndexesSearchWord(newIndexesSearchWord)
-      setDefaultIndexValue(newIndexesSearchWord.current)
-      setIndexSelectedInList(newIndexesSearchWord.current)
-      execCallback(newIndexesSearchWord.current)
-
-      // place the focus on the previously selected element
-      const refLi = refList.current.children[newIndexesSearchWord.current]
-      refList.current.scroll(0, refLi.offsetTop)
+      updateValue(() => newData)
+      setIndexSelectedItem(() => indexHoveredItem)
+      setIndexHoveredItem(() => indexHoveredItem)
+      setOpen(() => false)
     }
   }
 
   /**
-   * Allow to interact with the DropDown component
-   * See the functions :
-   * - actionsAllowedWhenIsOpen()
-   * - actionsAllowedWhenIsClosed()
+   * Handle item click when a value selected
+   * and close the dropdown
+   *
+   * The dropdown button recover the focus
    *
    * @param {Event} event
    */
-  function handleKeyDown(event) {
-    if(
-      (
-        ['ArrowUp', 'ArrowDown', 'Home', 'End', 'PageUp', 'PageDown', 'Space', 'Escape'].includes(event.code) === false
-        && (event.keyCode < 65 || event.keyCode > 90) === true
-      ) || event.ctrlKey === true
-    ) {
-      return null
-    }
+  function handleClickItemSelected(event) {
+    const target = event.target
+    const { type, index } = target?.dataset
 
-    event.preventDefault()
-
-    if(isOpen === true) {
-      actionsAllowedWhenIsOpen(event)
-    } else {
-      actionsAllowedWhenIsClosed(event)
+    if(type !== undefined && index !== undefined && type === 'item') {
+      refButton.current.focus()
+      updateValue(() => data[+index])
+      setOpen(() => false)
     }
   }
 
   /**
-   * Open / close the DropDown component
+   * Handle the hovering of the dropdown items
    *
    * @param {Event} event
    */
-  async function handleClickButton(event) {
-    setOpen(isOpen === false)
-
-    // place the focus on the previously selected element
-    if(isOpen === false) {
-      const refLi = await refList.current.children[defaultIndexValue]
-
-      refList.current.scroll(0, refLi.offsetTop)
-    }
+  function handleMouseMoveItem(event) {
+    setIndexHoveredItem(+event.target.dataset.index)
   }
 
-  /**
-   * Active the item when the mouse cursor
-   * is over it
-   *
-   * @param {Event} event
-   */
-  function handleMouseOverItem(event) {
-    event.preventDefault()
-    setIndexSelectedInList(+event.target.dataset.index)
-  }
-
-  /**
-   * Select an item and close the DropDown component
-   *
-   * @param {Event} event
-   */
-  function handleClickItem(event) {
-    setDefaultIndexValue(+event.target.dataset.index)
-    execCallback(+event.target.dataset.index)
-    setOpen(false)
-
-    refButton.current.focus()
-  }
+  const custhomThemeDropDownList = customTheme(
+    themes, [
+      classes.dropDownList,
+      (open === true ? classes.dropdownOpen : '')
+    ],
+    'customThemeDropDownList'
+  )
 
   return (
-    <div className={ classes.container }>
-      <label onClick={ handleClickLabel }>{ labelName }</label>
+    <div className={ customTheme(themes, [classes.container], 'customThemeContainer') }>
+      { labelName !== '' && <label onClick={ (event) => handleClickLabel(event) }>{ labelName }</label> }
 
-      <div className={ classes.dropdown } data-name="dropdown">
-        <span
-          ref={ refButton }
-          data-id={ data[defaultIndexValue].id }
-          className={ classes.button }
+      <div className={ customTheme(themes, [classes.dropdown], 'customThemeDropdown') } data-dropdown={ dropdownID }>
+        <button
+          type="button"
+          className={ customTheme(themes, [classes.button], 'customThemeButton') }
           tabIndex={ 0 }
-          onClick={ (event) => handleClickButton(event) }
-          onKeyDown={ (event) => handleKeyDown(event) }
+          onClick={ () => handleClickButton() }
+          onKeyDown={ (event) => handleKeyDownButton(event) }
+          onBlur={ (event) => handleBlur(event) }
+          ref={ refButton }
         >
-          <span>{ data[defaultIndexValue].name }</span>
+          <span>{ currentValue[mapProperties['text']] }</span>
           <i>▼</i>
-        </span>
+        </button>
 
         <ul
-          ref={ refList }
-          className={ classes.dropDownList }
-          hidden={ isOpen === false }
+          className={ custhomThemeDropDownList }
           data-name="dropdown-list"
+          hidden={ open === false }
+          onClick={ (event) => handleClickItemSelected(event) }
+          onFocus={ () => refButton.current.focus() }
+          tabIndex={ -1 }
         >
+          { console.clear() }
           {
             data.map((item, index) => {
-              const classesItem = isOpen === true && indexSelectedInList === index
-                ? classes.item+' '+classes.itemActive
-                : classes.item
+              const classesItemDefault = customTheme(themes, [classes.item], 'customThemeItem')
+              const classesItemActive = indexHoveredItem === index
+                ? customTheme(themes, [classes.itemActive], 'customThemeItemActive')
+                : ''
+              const classesItem = classesItemDefault+' '+classesItemActive
 
               return (
                 <li
-                  key={ item.id }
-                  data-id={ item.id }
+                  key={ item[mapProperties['value']] }
+                  data-id={ item[mapProperties['value']] }
+                  data-type="item"
                   data-index={ index }
                   className={ classesItem }
-                  onClick={ (event) => handleClickItem(event) }
-                  onMouseMove={ (event) => handleMouseOverItem(event) }
+                  onMouseMove={ (event) => handleMouseMoveItem(event) }
+                  ref={ (element) => refItem.current[index] = element }
                 >
-                  { item.name }
+                  { item[mapProperties['text']] }
                 </li>
               )
             })

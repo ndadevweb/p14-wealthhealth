@@ -1,0 +1,173 @@
+.customThemeContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.customThemeContainerHeader {
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 3px;
+  background: var(--primary);
+}
+
+.customThemeContainerData {
+  margin: 10px 0;
+  padding: 0;
+  border: 1px solid var(--primary);
+  border-radius: 3px;
+}
+
+/* custom theme show entries */
+
+.customThemeShowEntriesContainer {
+  color: var(--secondary);
+  font-size: .8rem;
+  font-weight: 600;
+}
+
+.customThemeShowEntriesContainer select {
+  margin: 0 5px;
+  padding: 2px;
+  width: 50px;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  background: #FFF;
+  text-align: center;
+  cursor: pointer;
+}
+
+/* custom theme search */
+
+.customThemeSearchContainer label {
+  color: var(--secondary);
+  font-size: .8rem;
+  font-weight: 600;
+}
+
+.customThemeSearchContainer input {
+  padding: 2px 5px;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  background: #FFF;
+}
+
+
+/* custom theme table */
+
+.customThemeTable {
+  border-collapse: collapse;
+}
+
+/* custom theme table head */
+
+.customThemeContainerHead {
+  background: var(--primary);
+  color: var(--secondary);
+  font-size: .8rem;
+}
+
+.customThemeContainerHead th div {
+  padding: 10px;
+}
+
+.customThemeContainerHead th:not(:last-child) {
+  border-right: 1px solid rgba(255, 255, 255, .3);
+}
+
+.customThemeContainerHead th:hover,
+.customThemeContainerHead th:focus  {
+  color: var(--secondary);
+}
+
+.customThemeContainerHeadIconSorting {
+  color: #FFF;
+}
+
+.customThemeContainerHeadIconSorting i:first-child {
+  top: 15%;
+}
+
+.customThemeContainerHeadIconSorting i:last-child {
+  bottom: 15%;
+}
+
+.customThemeCellHead[data-order="asc"] .customThemeContainerHeadIconSorting i:first-child,
+.customThemeCellHead[data-order="desc"] .customThemeContainerHeadIconSorting i:last-child {
+  color: var(--secondary);
+}
+
+
+/* custom theme table body */
+
+.customThemeContainerBody td {
+  padding: 15px 5px;
+  font-size: .9rem;
+}
+
+.customThemeContainerBody tr:nth-child(even) {
+  background: #E3E3E3;
+}
+
+.customThemeContainerBody tr:hover {
+  background: #BBB;
+}
+
+.customThemeBodyEmpty {
+  padding: 20px 0;
+  border: none;
+  font-size: .9rem;
+}
+
+
+
+/* custom theme footer */
+
+.customThemeContainerFooter {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+  padding: 0 10px;
+  border-radius: 3px;
+  background: var(--primary);
+}
+
+
+/* custom theme showing entries */
+
+.customShowingEntriesContainer {
+  color: var(--secondary);
+  font-size: .8rem;
+}
+
+.customShowingEntriesContainer span {
+  font-size: .9rem;
+  font-weight: 600;
+}
+
+
+/* custom theme pagination */
+
+.customThemePaginationContainer button,
+.customThemePaginationContainer button[disabled] {
+  padding: 8px 16px;
+  border: transparent;
+  border-radius: 5px;
+  font-size: .8rem;
+  font-weight: 600;
+}
+
+.customThemePaginationContainer button:not([disabled]) {
+  background: var(--secondary);;
+  color: #FFF;
+}
+
+.customThemePaginationContainer button:hover {
+  background: #FFF;
+  color: var(--primary);
+}
+
+.customThemePaginationContainer button[disabled],
+.customThemePaginationContainer button[disabled]:hover {
+  background:#FFF;
+  color: #BBB;
+}

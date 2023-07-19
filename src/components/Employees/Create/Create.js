@@ -1,14 +1,19 @@
 import { useState } from 'react'
-import DatePicker from '../../DatePicker/DatePicker'
-import DropDown from '../../DropDown/DropDown'
-import Modal from '../../Modal/Modal'
 import { useDispatch } from 'react-redux'
 import { create } from '../../../features/employeesSlice'
+import { DatePicker } from 'nda-react-datepicker'
+import DropDown from '../../DropDown/DropDown'
+import Modal from '../../Modal/Modal'
 
 import stateDataFromJSON from '../../../data/state.json'
 import departmentDataFromJSON from '../../../data/department.json'
 
 import classes from './Create.module.css'
+
+import classesDatePicker from '../../../assets/themes/DatePicker/DatePickerTheme.module.css'
+import classesDropDown from '../../../assets/themes/DropDown/DropDownTheme.module.css'
+import classesModal from '../../../assets/themes/Modal/ModalTheme.module.css'
+
 
 export default function Create() {
 
@@ -28,8 +33,8 @@ export default function Create() {
   const [street, setStreet] = useState('')
   const [city, setCity] = useState('')
 
-  const [state, setState] = useState('')
-  const [department, setDepartment] = useState('')
+  const [stateCountry, setStateCountry] = useState(stateDataFromJSON.data[0])
+  const [department, setDepartment] = useState(departmentDataFromJSON.data[0])
 
   const [zipCode, setZipCode] = useState('')
 
@@ -54,12 +59,13 @@ export default function Create() {
 
     const newEmployee = {
       firstName, lastName,
-      startDate, birthDate: birthDate,
-      department, street, city, zipCode,
-      state
+      startDate, birthDate,
+      department: department.name, street, city, zipCode,
+      state: stateCountry.name
     }
 
     dispatch(create(newEmployee))
+    setDisplayModal(true)
     reset(event.target)
     setErrors({})
   }
@@ -96,7 +102,7 @@ export default function Create() {
       invalidFields.city = "The 'City' field is required"
     }
 
-    if(state === '') {
+    if(stateCountry === '') {
       invalidFields.state = "The 'State' field is required"
     }
 
@@ -116,16 +122,15 @@ export default function Create() {
   function reset(target) {
     target.reset()
 
-    setDisplayModal(false)
-    setFirstName(null)
-    setLastName(null)
+    setFirstName('')
+    setLastName('')
     setBirthDate('')
     setStartDate('')
-    setStreet(null)
-    setCity(null)
-    setState(null)
-    setDepartment(null)
-    setZipCode(null)
+    setStreet('')
+    setCity('')
+    setStateCountry(stateDataFromJSON.data[0])
+    setDepartment(departmentDataFromJSON.data[0])
+    setZipCode('')
   }
 
   /**
@@ -155,100 +160,140 @@ export default function Create() {
 
   return (
     <>
-      <Modal open={ displayModal } callbackClose={ () => setDisplayModal(false) }>
+      <Modal open={ displayModal } callbackClose={ () => setDisplayModal(false) } labelButton='Fermer' themes={ classesModal }>
         Employee created !
       </Modal>
 
-      <form onSubmit={ handleSubmit } autoComplete="off">
-        <div>
-          <label htmlFor="firstName">First Name</label>
-          <input type="text" name="firstname" id="firstName" onInput={ event => setFirstName(event.target.value) } />
-          { errors.firstName && <span className={ classes.error }>{ errors.firstName }</span> }
-        </div>
+      <form onSubmit={ handleSubmit } autoComplete="off" className={ classes.mainForm }>
+        <fieldset>
+          <legend>Personnal</legend>
+          <div>
+            <label htmlFor="firstName">First Name</label>
+            <input type="text" name="firstname" id="firstName" className="inputText" onInput={ event => setFirstName(event.target.value) } />
+            { errors.firstName && <span className={ classes.error }>{ errors.firstName }</span> }
+          </div>
 
-        <div>
-          <label htmlFor="lastName">Last Name</label>
-          <input type="text" name="lastname" id="lastName" onInput={ event => setLastName(event.target.value) } />
-          { errors.lastName && <span className={ classes.error }>{ errors.lastName }</span> }
-        </div>
+          <div>
+            <label htmlFor="lastName">Last Name</label>
+            <input type="text" name="lastname" id="lastName" className="inputText" onInput={ event => setLastName(event.target.value) } />
+            { errors.lastName && <span className={ classes.error }>{ errors.lastName }</span> }
+          </div>
 
-        <div>
-          <label htmlFor="birthDate">Date of Birth</label>
-          <input
-            type="text"
-            name="birthdate"
-            id="birthDate"
-            value={ birthDate }
-            onInput={ (event) => setBirthDate(event.target.value) }
-            onClick={ () => setActiveDateOfBirthDatePicker(activeDateOfBirthDatePicker === false) }
-            autoComplete="off"
-          />
-          {
-            activeDateOfBirthDatePicker === true
-              ? <DatePicker
-                  dateSelected={ birthDate }
-                  updateInputDate={ (newDate) => updateInputDate(newDate, 'birthDate') }
-              />
-              : null
-          }
-          { errors.birthDate && <span className={ classes.error }>{ errors.birthDate }</span> }
-        </div>
+          <div>
+            <label htmlFor="birthDate">Date of Birth</label>
+            <input
+              type="text"
+              name="birthdate"
+              id="birthDate"
+              value={ birthDate }
+              className="inputText"
+              onInput={ (event) => setBirthDate(event.target.value) }
+              onClick={ () => setActiveDateOfBirthDatePicker(activeDateOfBirthDatePicker === false) }
+              // onKeyUp={ () => activeDateOfBirthDatePicker === true ? setActiveDateOfBirthDatePicker(false) : null }
+              autoComplete="off"
+            />
+            <div className={ classes.containerDatePicker }>
+              {
+                activeDateOfBirthDatePicker === true
+                  ? <DatePicker
+                      dateSelected={ birthDate }
+                      updateInputDate={ (newDate) => updateInputDate(newDate, 'birthDate') }
+                      themes={ classesDatePicker }
+                  />
+                  : null
+              }
+            </div>
+            { errors.birthDate && <span className={ classes.error }>{ errors.birthDate }</span> }
+          </div>
 
-        <div>
-          <label htmlFor="startDate">Start Date</label>
-          <input
-            type="text"
-            name="startdate"
-            id="startDate"
-            value={ startDate }
-            onInput={ (event) => setStartDate(event.target.value) }
-            onClick={ () => setActiveStartDateDatePicker(activeStartDateDatePicker === false) }
-            autoComplete="off"
-          />
-          {
-            activeStartDateDatePicker === true
-              ? <DatePicker
-                  dateSelected={ startDate }
-                  updateInputDate={ (newDate) => updateInputDate(newDate, 'startDate') }
-              />
-              : null
-          }
-          { errors.startDate && <span className={ classes.error }>{ errors.startDate }</span> }
-        </div>
+          <div className={ classes.datepicker }>
+            <label htmlFor="startDate">Start Date</label>
+            <input
+              type="text"
+              name="startdate"
+              id="startDate"
+              value={ startDate }
+              className="inputText"
+              onInput={ (event) => setStartDate(event.target.value) }
+              onClick={ () => setActiveStartDateDatePicker(activeStartDateDatePicker === false) }
+              // onKeyUp={ () => activeStartDateDatePicker === true ? setActiveStartDateDatePicker(false) : null }
+              autoComplete="off"
+            />
+            <div className={ classes.containerDatePicker }>
+              {
+                activeStartDateDatePicker === true
+                  ? <DatePicker
+                      dateSelected={ startDate }
+                      updateInputDate={ (newDate) => updateInputDate(newDate, 'startDate') }
+                      themes={ classesDatePicker }
+                  />
+                  : null
+              }
+            </div>
+            { errors.startDate && <span className={ classes.error }>{ errors.startDate }</span> }
+          </div>
+        </fieldset>
 
         <fieldset>
           <legend>Address</legend>
 
           <div>
             <label htmlFor="street">Street</label>
-            <input type="text" name="street" id="street" onInput={ event => setStreet(event.target.value) } />
+            <input type="text" name="street" id="street" className="inputText" onInput={ event => setStreet(event.target.value) } />
             { errors.street && <span className={ classes.error }>{ errors.street }</span> }
           </div>
 
           <div>
             <label htmlFor="city">City</label>
-            <input type="text" name="city" id="city" onInput={ event => setCity(event.target.value) } />
+            <input type="text" name="city" id="city" className="inputText" onInput={ event => setCity(event.target.value) } />
             { errors.city && <span className={ classes.error }>{ errors.city }</span> }
           </div>
 
           <div>
-            <DropDown data={ stateDataFromJSON.data } callback={ (dataSelected) => setState(dataSelected.id) } options={ { labelName: 'State', defaultValueSelected: 'AL' } } />
+            <div className={ classes.containerDropdown }>
+
+              <DropDown
+                data={ stateDataFromJSON.data }
+                currentValue={ stateCountry }
+                updateValue={ (stateCountrySelected) => setStateCountry(stateCountrySelected) }
+                labelName={ 'State' }
+                mapProperties={ { 'value': 'id', 'text': 'name'}}
+                themes={ classesDropDown }
+              />
+
+            </div>
+
             { errors.state && <span className={ classes.error }>{ errors.state }</span> }
           </div>
 
           <div>
             <label htmlFor="zipCode">Zip Code</label>
-            <input type="text" name="zipcode" id="zipCode" onInput={ event => setZipCode(event.target.value) } />
+            <input type="text" name="zipcode" id="zipCode" className="inputText" onInput={ event => setZipCode(event.target.value) } />
             { errors.zipCode && <span className={ classes.error }>{ errors.zipCode }</span> }
           </div>
         </fieldset>
 
-        <div>
-          <DropDown data={ departmentDataFromJSON.data } callback={ (dataSelected) => { setDepartment(dataSelected.name) } } options={ { labelName:  'Department', defaultValueSelected: 0 } } />
-          { errors.department && <span className={ classes.error }>{ errors.department }</span> }
-        </div>
+        <fieldset>
+          <legend>Department</legend>
 
-        <button type="submit">Save</button>
+          <div>
+            <div className={ classes.containerDropdown }>
+
+              <DropDown
+                data={ departmentDataFromJSON.data }
+                currentValue={ department }
+                updateValue={ (stateDepartmentSelected) => setDepartment(stateDepartmentSelected) }
+                labelName={ 'Department' }
+                mapProperties={ { 'value': 'id', 'text': 'name'}}
+                themes={ classesDropDown }
+              />
+
+            </div>
+            { errors.department && <span className={ classes.error }>{ errors.department }</span> }
+          </div>
+        </fieldset>
+
+        <button type="submit" className="formBtn">Save</button>
       </form>
     </>
   )

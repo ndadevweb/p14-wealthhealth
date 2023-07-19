@@ -1,13 +1,15 @@
 import { Outlet } from 'react-router-dom'
-import './App.css'
+import classes from './App.module.css'
 
-import { Navigation } from './components/'
+import { Header } from './components/'
 
 function App() {
   return (
     <>
-      <Navigation />
-      <Outlet />
+      <Header />
+      <main className={ classes.container }>
+        <Outlet />
+      </main>
     </>
   );
 }

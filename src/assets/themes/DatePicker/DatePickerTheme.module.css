@@ -1,0 +1,53 @@
+/* DatePicker container */
+
+.customThemeContainer {
+  background: #829332;
+}
+
+/* DatePicker Header */
+
+.customThemeButtonsAction {
+  background: #829332;
+}
+
+.customThemeButtonsAction button,
+.customThemeButtonsAction select {
+  border: 1px solid #a4b359;
+  background: #FFF;
+}
+
+.customThemeButtonsAction button:hover,
+.customThemeButtonsAction select:hover {
+  background: #EEE;
+}
+
+.customThemeButtonsAction .triangleLeft {}
+
+.customThemeButtonsAction .triangleRight {}
+
+.customThemeButtonsAction .home {}
+
+/* DatePicker DayName */
+
+.customThemeDayNamesDayName {
+  background: #FFF;
+}
+
+/* DatePicker DayCell Day */
+
+.customThemeDayCell {}
+
+.customThemeDayCellDay {
+  background: #FFF;
+}
+
+.customThemeDayCellDaySelected {
+  background: #000;
+}
+
+.customThemeDayCellDay:hover,
+.customThemeDayCellDaySelected:hover {
+  background: #19a3e0;
+}
+
+.customThemeDayCellDayAnotherMonth {}

@@ -2,3 +2,46 @@
   color: #c82222;
   font-weight: 600;
 }
+
+.mainForm label {
+  display: block;
+  margin-bottom: 2px;
+  font-size: .9rem;
+}
+
+.mainForm input {
+  width: 100%;
+}
+
+.mainForm fieldset {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: min-content min-content;
+  gap: 12px;
+  margin: 20px 0;
+  padding-top: 20px;
+  padding-bottom: 30px;
+  border: 1px solid var(--primary);
+  min-height: 120px;
+}
+
+.mainForm legend {
+  padding: 0 10px;
+}
+
+.mainForm button[type="submit"] {
+  float: right;
+  margin-bottom: 20px;
+}
+
+.mainForm .containerDatePicker {
+  position: absolute;
+  z-index: 2500;
+}
+
+.mainForm .containerDropdown {
+  width: 100%;
+  max-width: 256px;
+  position: absolute;
+}

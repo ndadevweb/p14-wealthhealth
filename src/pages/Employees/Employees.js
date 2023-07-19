@@ -1,8 +1,15 @@
 import { Link } from 'react-router-dom'
-import DataTable from '../../components/DataTable/DataTable'
 import { fetchAll } from '../../features/employeesSlice'
 import { useSelector } from 'react-redux'
+import { useDocumentTitle } from '../../hooks/useDocumentTitle'
+import DataTable from '../../components/DataTable/DataTable'
+import classesDataTable from '../../assets/themes/DataTable/DataTableTheme.module.css'
 
+/**
+ * Page to display the employees list
+ *
+ * @returns <Employees />
+ */
 export default function Employees() {
 
   const dataTablesColumnsConfig = [
@@ -19,13 +26,16 @@ export default function Employees() {
 
   const employees = useSelector(fetchAll)
 
+  useDocumentTitle('Employee list')
 
   return (
     <>
-      <h1>Current Employees</h1>
+      <h2 className="pageTitle">Current Employees</h2>
+
       <DataTable
         data={ employees }
         columns={ dataTablesColumnsConfig }
+        themes={ classesDataTable }
       />
       <Link to='/'>Home</Link>
     </>

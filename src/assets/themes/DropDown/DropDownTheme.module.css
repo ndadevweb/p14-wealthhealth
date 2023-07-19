@@ -1,0 +1,36 @@
+.customThemeButton,
+.customThemeButton:hover,
+.customThemeButton:focus {
+  height: 30px;
+  border: 2px solid var(--primary);
+  border-radius: 4px;
+  background: var(--primary);
+  color: var(--secondary);
+  font-size: .8rem;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.customThemeItem {
+  display: block;
+  height: 30px;
+  border-left: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-indent: 0px;
+  transition: text-indent 500ms, border 250ms;
+  line-height: 30px;
+  font-size: .9rem;
+}
+
+.customThemeItem.customThemeItemActive {
+  text-indent: 8px;
+  border-left: 3px solid var(--primary);
+  background: var(--secondary);
+}
+
+.customThemeDropDownList {
+  margin-top: -4px;
+  border: 3px solid var(--primary);
+  border-radius: 0 0 3px 3px;
+}

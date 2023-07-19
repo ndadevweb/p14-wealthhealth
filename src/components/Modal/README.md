@@ -21,6 +21,7 @@ In your component
 
 ```
 import { useState } from 'react'
+import Modal from './components/Modal'
 
 export default YourComponent() {
   const [displayModal, setDisplayModal] = useState(false)

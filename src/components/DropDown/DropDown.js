@@ -105,8 +105,8 @@ export default function DropDown({
    * when clicked
    */
   function handleClickButton() {
-    const mapPropertyValue = mapProperties['id']
-    const newIndexSelectedItem = data.findIndex(currentData => currentData[mapPropertyValue] === currentValue[mapPropertyValue])
+    const property = mapProperties['value']
+    const newIndexSelectedItem = data.findIndex(currentData => currentData[property] === currentValue[property])
 
     setIndexSelectedItem(() => newIndexSelectedItem)
     setIndexHoveredItem(() => newIndexSelectedItem)
@@ -145,7 +145,7 @@ export default function DropDown({
    */
   function buttonInteractionsAllowedWhenClosed(keyCode) {
     if(['ArrowUp', 'ArrowDown', 'Home', 'End', 'PageUp', 'PageDown'].includes(keyCode) === true) {
-      const newIndexSelectedItem = getIndexDataByKeyCode(data, currentValue, keyCode)
+      const newIndexSelectedItem = getIndexDataByKeyCode(data, currentValue, keyCode, mapProperties)
       const newData = data[newIndexSelectedItem]
 
       updateValue(() => newData)
@@ -175,7 +175,7 @@ export default function DropDown({
       const currentValueSelected = data[indexHoveredItem]
 
       // It will be the new index after key pressed
-      const newIndex = getIndexDataByKeyCode(data, currentValueSelected, keyCode)
+      const newIndex = getIndexDataByKeyCode(data, currentValueSelected, keyCode, mapProperties)
 
       // Currently selected item
       const itemSelected = refItem.current[indexHoveredItem]
@@ -191,7 +191,7 @@ export default function DropDown({
 
       setIndexHoveredItem(() => newIndex)
     } else if(keyCode === 'Escape') {
-      const newIndexSelectedItem = getIndexDataByKeyCode(data, currentValue, keyCode)
+      const newIndexSelectedItem = getIndexDataByKeyCode(data, currentValue, keyCode, mapProperties)
 
       setIndexSelectedItem(() => newIndexSelectedItem)
       setIndexHoveredItem(() => newIndexSelectedItem)
@@ -268,7 +268,6 @@ export default function DropDown({
           onFocus={ () => refButton.current.focus() }
           tabIndex={ -1 }
         >
-          { console.clear() }
           {
             data.map((item, index) => {
               const classesItemDefault = customTheme(themes, [classes.item], 'customThemeItem')

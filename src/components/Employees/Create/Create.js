@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { create } from '../../../features/employeesSlice'
 import { DatePicker } from 'nda-react-datepicker'
+import ErrorList from '../../ErrorList/ErrorList'
 import DropDown from '../../DropDown/DropDown'
 import Modal from '../../Modal/Modal'
 
@@ -13,13 +14,12 @@ import classes from './Create.module.css'
 import classesDatePicker from '../../../assets/themes/DatePicker/DatePickerTheme.module.css'
 import classesDropDown from '../../../assets/themes/DropDown/DropDownTheme.module.css'
 import classesModal from '../../../assets/themes/Modal/ModalTheme.module.css'
+import { useValidateForm } from '../../../hooks/useValidateForm'
 
 
 export default function Create() {
 
   const [displayModal, setDisplayModal] = useState(false)
-
-  const [errors, setErrors] = useState({})
 
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
@@ -38,7 +38,54 @@ export default function Create() {
 
   const [zipCode, setZipCode] = useState('')
 
+  const {
+    errors,
+    fieldsValidated,
+    clearErrors,
+    setConfiguration,
+    isValid
+  } = useValidateForm()
+
   const dispatch = useDispatch()
+
+  setConfiguration([
+    {
+      name: 'firstName',
+      rules: { required: true, minMax: [2, 30] }
+    },
+    {
+      name: 'lastName',
+      rules: { required: true, minMax: [2, 30] }
+    },
+    {
+      name: 'birthDate',
+      rules: { required: true, date: { format: 'MM/DD/YYYY'} }
+    },
+    {
+      name: 'startDate',
+      rules: { required: true, date: { format: 'MM/DD/YYYY'} }
+    },
+    {
+      name: 'street',
+      rules: { required: true, minMax: [5, 100] }
+    },
+    {
+      name: 'city',
+      rules: { required: true, min: 2 }
+    },
+    {
+      name: 'state',
+      rules: { required: true, inList: stateDataFromJSON.data.map(stateRow => stateRow.name) }
+    },
+    {
+      name: 'zipCode',
+      rules: { required: true, numeric: true }
+    },
+    {
+      name: 'department',
+      rules: { required: true, inList: departmentDataFromJSON.data.map(departmentRow => departmentRow.name) }
+    }
+  ])
 
 
   /**
@@ -49,14 +96,6 @@ export default function Create() {
   function handleSubmit(event) {
     event.preventDefault()
 
-    const invalidFields = checkValues()
-
-    if(Object.keys(invalidFields).length > 0) {
-      setErrors(invalidFields)
-
-      return null
-    }
-
     const newEmployee = {
       firstName, lastName,
       startDate, birthDate,
@@ -64,64 +103,17 @@ export default function Create() {
       state: stateCountry.name
     }
 
-    dispatch(create(newEmployee))
-    setDisplayModal(true)
-    reset(event.target)
-    setErrors({})
+    if(isValid(newEmployee) === true) {
+      dispatch(create(fieldsValidated))
+      setDisplayModal(true)
+      clearErrors()
+      resetForm()
+    }
   }
 
-  function checkValues() {
-    const invalidFields = {}
-
-    if(firstName === '') {
-      invalidFields.firstName = "The 'First Name' field is required"
-    }
-
-    if(lastName === '') {
-      invalidFields.lastName = "The 'Last Name' field is required"
-    }
-
-    if(birthDate === '') {
-      invalidFields.birthDate = "The 'Date of birth' field is required"
-    } else if(/^\d{2}\/\d{2}\/\d{4}$/.test(birthDate) === false) {
-      invalidFields.birthDate = "The 'Date of birth' field must be a valid date {MM/DD/YYYY}"
-    }
-
-
-    if(startDate === '') {
-      invalidFields.startDate = "The 'Start Date' field is required"
-    } else if(/^\d{2}\/\d{2}\/\d{4}$/.test(startDate) === false) {
-      invalidFields.startDate = "The 'Start Date' field must be a valid date {MM/DD/YYYY}"
-    }
-
-    if(street === '') {
-      invalidFields.street = "The 'Street' field is required"
-    }
-
-    if(city === '') {
-      invalidFields.city = "The 'City' field is required"
-    }
-
-    if(stateCountry === '') {
-      invalidFields.state = "The 'State' field is required"
-    }
-
-    if(zipCode === '') {
-      invalidFields.zipCode = "The 'Zip Code' field is required"
-    } else if(isNaN(zipCode) === true) {
-      invalidFields.zipCode = "The 'Zip Code' field must be a number"
-    }
-
-    if(department === '') {
-      invalidFields.department = "The 'Department' field is required"
-    }
-
-    return invalidFields
-  }
-
-  function reset(target) {
-    target.reset()
-
+  function resetForm() {
+    setActiveDateOfBirthDatePicker(false)
+    setActiveStartDateDatePicker(false)
     setFirstName('')
     setLastName('')
     setBirthDate('')
@@ -169,14 +161,14 @@ export default function Create() {
           <legend>Personnal</legend>
           <div>
             <label htmlFor="firstName">First Name</label>
-            <input type="text" name="firstname" id="firstName" className="inputText" onInput={ event => setFirstName(event.target.value) } />
-            { errors.firstName && <span className={ classes.error }>{ errors.firstName }</span> }
+            <input type="text" name="firstname" id="firstName" className="inputText" onInput={ event => setFirstName(event.target.value) } value={ firstName }/>
+            <ErrorList errors={ errors?.firstName } />
           </div>
 
           <div>
             <label htmlFor="lastName">Last Name</label>
-            <input type="text" name="lastname" id="lastName" className="inputText" onInput={ event => setLastName(event.target.value) } />
-            { errors.lastName && <span className={ classes.error }>{ errors.lastName }</span> }
+            <input type="text" name="lastname" id="lastName" className="inputText" onInput={ event => setLastName(event.target.value) } value={ lastName } />
+            <ErrorList errors={ errors?.lastName } />
           </div>
 
           <div>
@@ -203,7 +195,7 @@ export default function Create() {
                   : null
               }
             </div>
-            { errors.birthDate && <span className={ classes.error }>{ errors.birthDate }</span> }
+            <ErrorList errors={ errors?.birthDate } />
           </div>
 
           <div className={ classes.datepicker }>
@@ -230,7 +222,8 @@ export default function Create() {
                   : null
               }
             </div>
-            { errors.startDate && <span className={ classes.error }>{ errors.startDate }</span> }
+
+            <ErrorList errors={ errors?.startDate } />
           </div>
         </fieldset>
 
@@ -239,57 +232,50 @@ export default function Create() {
 
           <div>
             <label htmlFor="street">Street</label>
-            <input type="text" name="street" id="street" className="inputText" onInput={ event => setStreet(event.target.value) } />
-            { errors.street && <span className={ classes.error }>{ errors.street }</span> }
+            <input type="text" name="street" id="street" className="inputText" onInput={ event => setStreet(event.target.value) } value={ street } />
+            <ErrorList errors={ errors?.street } />
           </div>
 
           <div>
             <label htmlFor="city">City</label>
-            <input type="text" name="city" id="city" className="inputText" onInput={ event => setCity(event.target.value) } />
-            { errors.city && <span className={ classes.error }>{ errors.city }</span> }
+            <input type="text" name="city" id="city" className="inputText" onInput={ event => setCity(event.target.value) } value={ city } />
+            <ErrorList errors={ errors?.city } />
           </div>
 
-          <div>
-            <div className={ classes.containerDropdown }>
+          <div className={ classes.containerDropdown }>
+            <DropDown
+              data={ stateDataFromJSON.data }
+              currentValue={ stateCountry }
+              updateValue={ (stateCountrySelected) => setStateCountry(stateCountrySelected) }
+              labelName={ 'State' }
+              mapProperties={ { 'value': 'id', 'text': 'name'}}
+              themes={ classesDropDown }
+            />
 
-              <DropDown
-                data={ stateDataFromJSON.data }
-                currentValue={ stateCountry }
-                updateValue={ (stateCountrySelected) => setStateCountry(stateCountrySelected) }
-                labelName={ 'State' }
-                mapProperties={ { 'value': 'id', 'text': 'name'}}
-                themes={ classesDropDown }
-              />
-
-            </div>
-
-            { errors.state && <span className={ classes.error }>{ errors.state }</span> }
+            <ErrorList errors={ errors?.state } />
           </div>
 
           <div>
             <label htmlFor="zipCode">Zip Code</label>
-            <input type="text" name="zipcode" id="zipCode" className="inputText" onInput={ event => setZipCode(event.target.value) } />
-            { errors.zipCode && <span className={ classes.error }>{ errors.zipCode }</span> }
+            <input type="text" name="zipcode" id="zipCode" className="inputText" onInput={ event => setZipCode(event.target.value) } value={ zipCode } />
+            <ErrorList errors={ errors?.zipCode } />
           </div>
         </fieldset>
 
         <fieldset>
           <legend>Department</legend>
 
-          <div>
-            <div className={ classes.containerDropdown }>
+          <div className={ classes.containerDropdown }>
+            <DropDown
+              data={ departmentDataFromJSON.data }
+              currentValue={ department }
+              updateValue={ (stateDepartmentSelected) => setDepartment(stateDepartmentSelected) }
+              labelName={ 'Department' }
+              mapProperties={ { 'value': 'id', 'text': 'name'}}
+              themes={ classesDropDown }
+            />
 
-              <DropDown
-                data={ departmentDataFromJSON.data }
-                currentValue={ department }
-                updateValue={ (stateDepartmentSelected) => setDepartment(stateDepartmentSelected) }
-                labelName={ 'Department' }
-                mapProperties={ { 'value': 'id', 'text': 'name'}}
-                themes={ classesDropDown }
-              />
-
-            </div>
-            { errors.department && <span className={ classes.error }>{ errors.department }</span> }
+            <ErrorList errors={ errors?.department } />
           </div>
         </fieldset>
 

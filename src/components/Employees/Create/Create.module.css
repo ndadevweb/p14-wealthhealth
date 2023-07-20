@@ -1,8 +1,3 @@
-.error {
-  color: #c82222;
-  font-weight: 600;
-}
-
 .mainForm label {
   display: block;
   margin-bottom: 2px;
@@ -23,7 +18,7 @@
   padding-top: 20px;
   padding-bottom: 30px;
   border: 1px solid var(--primary);
-  min-height: 120px;
+  min-height: 150px;
 }
 
 .mainForm legend {
@@ -41,7 +36,17 @@
 }
 
 .mainForm .containerDropdown {
-  width: 100%;
+  position: relative;
   max-width: 256px;
+}
+
+.mainForm .containerDropdown > :first-child {
   position: absolute;
+}
+
+.mainForm .containerDropdown > :last-child:not([class^="DropDown"]) {
+  position: absolute;
+  top: 48px;
+  z-index: -5;
+  width: 100%;
 }

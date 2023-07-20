@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useDispatch } from 'react-redux'
 import { create } from '../../../features/employeesSlice'
 import { DatePicker } from 'nda-react-datepicker'
@@ -15,7 +15,6 @@ import classesDatePicker from '../../../assets/themes/DatePicker/DatePickerTheme
 import classesDropDown from '../../../assets/themes/DropDown/DropDownTheme.module.css'
 import classesModal from '../../../assets/themes/Modal/ModalTheme.module.css'
 import { useValidateForm } from '../../../hooks/useValidateForm'
-
 
 export default function Create() {
 
@@ -37,6 +36,9 @@ export default function Create() {
   const [department, setDepartment] = useState(departmentDataFromJSON.data[0])
 
   const [zipCode, setZipCode] = useState('')
+
+  const refInputBirthDate = useRef(null)
+  const refInputStartDate = useRef(null)
 
   const {
     errors,
@@ -173,50 +175,83 @@ export default function Create() {
 
           <div>
             <label htmlFor="birthDate">Date of Birth</label>
-            <input
-              type="text"
-              name="birthdate"
-              id="birthDate"
-              value={ birthDate }
-              className="inputText"
-              onInput={ (event) => setBirthDate(event.target.value) }
-              onClick={ () => setActiveDateOfBirthDatePicker(activeDateOfBirthDatePicker === false) }
-              // onKeyUp={ () => activeDateOfBirthDatePicker === true ? setActiveDateOfBirthDatePicker(false) : null }
-              autoComplete="off"
-            />
+
+            <div className={ classes.containerInputDatePicker }>
+              <button
+                type="button"
+                aria-label="Open calendar Date of Birth"
+                onClick={ () => setActiveDateOfBirthDatePicker(activeDateOfBirthDatePicker === false) }
+              >
+                { activeDateOfBirthDatePicker === false ? 'Open' : 'Close' }
+              </button>
+
+              <input
+                type="text"
+                name="birthdate"
+                id="birthDate"
+                value={ birthDate }
+                className="inputText"
+                onInput={ (event) => setBirthDate(event.target.value) }
+                onClick={ () => setActiveDateOfBirthDatePicker(activeDateOfBirthDatePicker === false) }
+                onKeyUp={ (event) => event.key === 'Escape' && setActiveDateOfBirthDatePicker(false) }
+                autoComplete="off"
+                ref={ refInputBirthDate }
+              />
+            </div>
+
             <div className={ classes.containerDatePicker }>
               {
                 activeDateOfBirthDatePicker === true
                   ? <DatePicker
                       dateSelected={ birthDate }
-                      updateInputDate={ (newDate) => updateInputDate(newDate, 'birthDate') }
+                      updateInputDate={ (newDate) => {
+                        updateInputDate(newDate, 'birthDate')
+                        refInputBirthDate.current.focus()
+                      }}
                       themes={ classesDatePicker }
                   />
                   : null
               }
             </div>
+
             <ErrorList errors={ errors?.birthDate } />
           </div>
 
           <div className={ classes.datepicker }>
             <label htmlFor="startDate">Start Date</label>
-            <input
-              type="text"
-              name="startdate"
-              id="startDate"
-              value={ startDate }
-              className="inputText"
-              onInput={ (event) => setStartDate(event.target.value) }
-              onClick={ () => setActiveStartDateDatePicker(activeStartDateDatePicker === false) }
-              // onKeyUp={ () => activeStartDateDatePicker === true ? setActiveStartDateDatePicker(false) : null }
-              autoComplete="off"
-            />
+
+            <div className={ classes.containerInputDatePicker }>
+              <button
+                type="button"
+                aria-label="Open calendar Start Date"
+                onClick={ () => setActiveStartDateDatePicker(activeStartDateDatePicker === false) }
+              >
+                { activeStartDateDatePicker === false ? 'Open' : 'Close' }
+              </button>
+
+              <input
+                type="text"
+                name="startdate"
+                id="startDate"
+                value={ startDate }
+                className="inputText"
+                onInput={ (event) => setStartDate(event.target.value) }
+                onClick={ () => setActiveStartDateDatePicker(activeStartDateDatePicker === false) }
+                onKeyUp={ (event) => event.key === 'Escape' && setActiveStartDateDatePicker(false) }
+                ref={ refInputStartDate }
+                autoComplete="off"
+              />
+            </div>
+
             <div className={ classes.containerDatePicker }>
               {
                 activeStartDateDatePicker === true
                   ? <DatePicker
                       dateSelected={ startDate }
-                      updateInputDate={ (newDate) => updateInputDate(newDate, 'startDate') }
+                      updateInputDate={ (newDate) => {
+                        updateInputDate(newDate, 'startDate')
+                        refInputStartDate.current.focus()
+                      }}
                       themes={ classesDatePicker }
                   />
                   : null

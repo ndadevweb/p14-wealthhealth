@@ -30,6 +30,38 @@
   margin-bottom: 20px;
 }
 
+.mainForm .containerInputDatePicker {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.mainForm .containerInputDatePicker input {
+  padding-right: 32px;
+}
+
+.mainForm .containerInputDatePicker button {
+  position: absolute;
+  right: 4px;
+  z-index: -1;
+  height: 23px;
+  width: fit-content;
+  padding: 8px;
+  border: none;
+  border-radius: 5px;
+  background: var(--primary);
+  color: var(--secondary);
+  font-size: .7rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+}
+
+.mainForm .containerInputDatePicker button:focus {
+  z-index: 0;
+}
+
 .mainForm .containerDatePicker {
   position: absolute;
   z-index: 2500;

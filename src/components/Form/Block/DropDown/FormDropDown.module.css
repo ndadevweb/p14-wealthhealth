@@ -1,0 +1,15 @@
+.containerDropdown {
+  position: relative;
+  max-width: 256px;
+}
+
+.containerDropdown > :first-child {
+  position: absolute;
+}
+
+.containerDropdown > :last-child:not([class^="DropDown"]) {
+  position: absolute;
+  top: 48px;
+  z-index: -5;
+  width: 100%;
+}

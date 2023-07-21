@@ -1,0 +1,41 @@
+.containerInputDatePicker {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.containerInputDatePicker input {
+  padding-right: 32px;
+}
+
+.containerInputDatePicker button {
+  position: absolute;
+  right: 4px;
+  z-index: -1;
+  border: none;
+  border-radius: 5px;
+  background: var(--primary);
+  color: var(--secondary);
+  font-size: .7rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+
+  width: 0px;
+  height: 0px;
+  overflow: hidden;
+  padding: 0;
+}
+
+.containerInputDatePicker button:focus {
+  z-index: 0;
+  height: 23px;
+  width: fit-content;
+  padding: 8px;
+}
+
+.containerDatePicker {
+  position: absolute;
+  z-index: 2500;
+}

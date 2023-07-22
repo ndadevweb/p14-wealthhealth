@@ -56,6 +56,9 @@
 
 .customThemeTable {
   border-collapse: collapse;
+  table-layout: fixed;
+  width: 100%;
+  word-break: break-word;
 }
 
 /* custom theme table head */
@@ -67,7 +70,12 @@
 }
 
 .customThemeContainerHead th div {
-  padding: 10px;
+  padding: 5px 2px 5px 5px;
+  justify-content: space-between;
+}
+
+.customThemeContainerHead th div > :first-child {
+  white-space: break-spaces;
 }
 
 .customThemeContainerHead th:not(:last-child) {
@@ -81,14 +89,30 @@
 
 .customThemeContainerHeadIconSorting {
   color: #FFF;
+  position: relative;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  padding-left: 5px;
 }
 
 .customThemeContainerHeadIconSorting i:first-child {
-  top: 15%;
+  position: relative;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
 }
 
 .customThemeContainerHeadIconSorting i:last-child {
-  bottom: 15%;
+  position: relative;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
 }
 
 .customThemeCellHead[data-order="asc"] .customThemeContainerHeadIconSorting i:first-child,
@@ -96,12 +120,12 @@
   color: var(--secondary);
 }
 
-
 /* custom theme table body */
 
 .customThemeContainerBody td {
   padding: 15px 5px;
   font-size: .9rem;
+  vertical-align: text-top;
 }
 
 .customThemeContainerBody tr:nth-child(even) {
@@ -170,4 +194,15 @@
 .customThemePaginationContainer button[disabled]:hover {
   background:#FFF;
   color: #BBB;
+}
+
+
+@media screen and (max-width: 960px) {
+  .customThemeTable {
+    table-layout: auto;
+  }
+
+  .customThemeContainerHead th div > :first-child {
+    white-space: nowrap;
+  }
 }

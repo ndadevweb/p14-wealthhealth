@@ -72,7 +72,7 @@ export default function Create() {
     },
     {
       name: 'zipCode',
-      rules: { required: true, numeric: true }
+      rules: { required: true, numeric: true, minMax: [2, 10] }
     },
     {
       name: 'department',

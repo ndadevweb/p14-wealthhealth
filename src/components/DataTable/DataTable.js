@@ -15,12 +15,13 @@ import classes from './DataTable.module.css'
  * @param {Object} props
  * @param {Array}  props.data
  * @param {Array}  props.columns
+ * @param {Object} props.rows
  * @param {Number} props.maxDefaultTotalEntries
  * @param {Object} props.themes (optional)
  *
- * @returns <DataTable data={ ... } columns={ ... } maxDefaultEntries={ ... } />
+ * @returns <DataTable data={ ... } columns={ ... } rows={ ... } maxDefaultEntries={ ... } />
  */
-export default function DataTable({ data, columns, maxDefaultEntries, themes }) {
+export default function DataTable({ data, columns, rows, maxDefaultEntries, themes }) {
 
   const defaultColumnToSort = columns
     .filter(column => column.hasOwnProperty('order'))
@@ -80,6 +81,7 @@ export default function DataTable({ data, columns, maxDefaultEntries, themes }) 
       <div className={ customTheme(themes, [classes.data], 'customThemeContainerData') }>
         <Table
           columns={ columns }
+          rows={ rows }
           data={ dataFiltered }
           sortByColumn={ sortBy }
           updateSortByColumn={ (column, order) => handleSortBy(column, order) }

@@ -5,13 +5,14 @@ import classes from './Body.module.css'
  * body that will contain the data
  *
  * @param {Object} props
+ * @param {Object} props.rows (optional)
  * @param {Number} props.numberOfColumns
  * @param {Array}  props.data
  * @param {Object} props.themes (optional)
  *
  * @returns <Body { numberOfColumns={ ... } data={ ... } themes={ ... } />
  */
-export default function Body({ numberOfColumns, data, themes }) {
+export default function Body({ rows, numberOfColumns, data, themes }) {
 
   return (
     <tbody className={ customTheme(themes, [], 'customThemeContainerBody') }>
@@ -26,9 +27,16 @@ export default function Body({ numberOfColumns, data, themes }) {
           data.map((entries, index) => (
             <tr key={ index }>
               {
-                Object.values(entries).map((entry, index) => (
-                  <td key={ index }>{ entry }</td>
-                ))
+                Object.entries(entries).map((entry, index) => {
+                  const [key, value] = entry
+                  const align = rows?.[key] !== undefined ? rows[key].align : 'left'
+
+                  return (
+                    <td key={ index } align={ align }>
+                      { value }
+                    </td>
+                  )
+                })
               }
             </tr>
           ))

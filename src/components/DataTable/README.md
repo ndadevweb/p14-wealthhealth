@@ -11,6 +11,7 @@ It can receive 4 arguments including 2 optional
 
 - {Array} **data** Data to inject in the DataTable
 - {Array} **columns** configuration of the colums to display
+- {Object} **rows** configuration of the rows to display
 - {Number} **maxDefaultTotalEntries** Max entries to display per table page
 - {Object} **themes** To change the styles of the component _(Optional)_
 
@@ -39,25 +40,35 @@ export default YourComponent() {
       {
         columnOne: 'some data of column 1',
         columnTwo: '07/08/2023',
-        columnThree: 'data of the column 3'
+        columnThree: 'data of the column 3',
+        columnFour: 123
       },
       {
         columnOne: 'another some data of column 1',
         columnTwo: '07/10/2023',
-        columnThree: 'another data of the column 3'
+        columnThree: 'another data of the column 3',
+        columnFour: 456
       },
       {
         columnOne: 'data...',
         columnTwo: '07/02/2023',
-        columnThree: 'new data'
+        columnThree: 'new data',
+        columnFour: 789
       }
     ]
+
+    // left, center, right
+    const dataTablesRowsConfig = {
+      columnThree: { align: 'center' },
+      columnFour: { align: 'right' }
+    }
 
     return (
       <>
         <DataTable
           data={ data }
           columns={ dataTablesColumnsConfig }
+          rows={ dataTablesRowsConfig }
           themes={ classesDataTableCustomTheme }
         />
       </>
@@ -72,15 +83,15 @@ The column one will be sorted by ascending (order: 'asc')
 The column two must be date type for the sort function to work properly (type: 'date')
 
 ```
-+-------------------------------+---------------+------------------------------+
-| Column one                    | Column Two    | Column Three                 |
-+-------------------------------+---------------+------------------------------+
-| some data of column 1         | 07/08/2023    | data of the column 3         |
-+-------------------------------+---------------+------------------------------+
-| another some data of column 1 | 07/10/2023    | another data of the column 3 |
-+-------------------------------+---------------+------------------------------+
-| some data of column 1         | 07/02/2023    | new data                     |
-+-------------------------------+---------------+------------------------------+
++-------------------------------+---------------+------------------------------+------------+
+| Column one                    | Column Two    | Column Three                 | columnFour |
++-------------------------------+---------------+------------------------------+------------+
+| some data of column 1         | 07/08/2023    |     data of the column 3     |        123 |
++-------------------------------+---------------+------------------------------+------------+
+| another some data of column 1 | 07/10/2023    | another data of the column 3 |        456 |
++-------------------------------+---------------+------------------------------+------------+
+| data...                       | 07/02/2023    |           new data           |        789 |
++-------------------------------+---------------+------------------------------+------------+
 ```
 
 

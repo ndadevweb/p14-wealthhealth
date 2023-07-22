@@ -24,6 +24,10 @@ export default function Employees() {
     { id: 'zipCode', label: 'Zip Code' }
   ]
 
+  const dataTablesRowsConfig = {
+    zipCode: { align: 'right' }
+  }
+
   const employees = useSelector(fetchAll)
 
   useDocumentTitle('Employee list')
@@ -35,6 +39,7 @@ export default function Employees() {
       <DataTable
         data={ employees }
         columns={ dataTablesColumnsConfig }
+        rows={ dataTablesRowsConfig }
         themes={ classesDataTable }
       />
       <Link to='/'>Home</Link>

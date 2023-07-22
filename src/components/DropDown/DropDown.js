@@ -53,26 +53,9 @@ export default function DropDown({
       itemSelected.scrollIntoView({ behavior: 'smooth', block: 'center' })
     }
 
-    /**
-     * Close dropdown when click outside itself
-     *
-     * @param {Event} event
-     */
-    function closeDropDown(event) {
-      const dataAttribute = `[data-dropdown="${dropdownID}"]`
-
-      if(event.target.closest(dataAttribute) === null) {
-        setOpen(() => false)
-      }
-    }
-
     if(open === true) {
-      document.body.addEventListener('click', closeDropDown)
-
       scrollToItemSelected()
     }
-
-    return () => document.body.removeEventListener('click', closeDropDown)
   }, [open, indexSelectedItem, dropdownID])
 
   /**
@@ -266,6 +249,7 @@ export default function DropDown({
           hidden={ open === false }
           onClick={ (event) => handleClickItemSelected(event) }
           onFocus={ () => refButton.current.focus() }
+          onBlur={ (event) => handleBlur(event) }
           tabIndex={ -1 }
         >
           {

@@ -1,4 +1,4 @@
-import { useState, useEffect, useId, useRef } from 'react'
+import { useState, useId, useRef } from 'react'
 import { DatePicker } from 'nda-react-datepicker'
 import classesDatePicker from '../../../../assets/themes/DatePicker/DatePickerTheme.module.css'
 import classes from './FormDatePicker.module.css'
@@ -23,24 +23,6 @@ export default function FormDatePicker({ name, label, value, onChange, errors })
   const containerID = `formDatePicker${useId()}`
 
   const refInput = useRef(null)
-
-  useEffect(() => {
-    const closeDatePicker = (event) => {
-      if(event.target.closest(`[data-id="${containerID}"]`) === null) {
-        setOpen(() => false)
-      }
-    }
-
-    if(open === true) {
-      document.body.addEventListener('click', closeDatePicker)
-      document.body.addEventListener('keyup', closeDatePicker)
-    }
-
-    return () => {
-      document.body.removeEventListener('click', closeDatePicker)
-      document.body.removeEventListener('keyup', closeDatePicker)
-    }
-  }, [open, containerID])
 
   /**
    * Update the parent component's state
@@ -71,6 +53,10 @@ export default function FormDatePicker({ name, label, value, onChange, errors })
   }
 
   /**
+   * Change the date
+   * Close the DatePicker
+   * Add focus on the input field
+   *
    * @param {String} value
    */
   function handleOnSelectDate(value) {
@@ -79,14 +65,26 @@ export default function FormDatePicker({ name, label, value, onChange, errors })
     refInput.current.focus()
   }
 
+  /**
+   * Handle blur when the user
+   * leave it component container
+   *
+   * @param {Event} event
+   */
+  function handleOnBlur(event) {
+    if([null, undefined].includes(event.relatedTarget?.closest(`[data-id="${containerID}"]`)) === true) {
+      setOpen(() => false)
+    }
+  }
+
   return (
-    <div data-id={ containerID }>
+    <div data-id={ containerID } onBlur={ handleOnBlur }>
       <label htmlFor={ name }>{ label }</label>
 
       <div className={ classes.containerInputDatePicker }>
         <button
           type="button"
-          title="Open calendar"
+          title={ open === false ? 'Open calendar' : 'Close calendar' }
           onClick={ handleToggle }
         >
           { open === false ? 'Open' : 'Close' }
@@ -111,7 +109,7 @@ export default function FormDatePicker({ name, label, value, onChange, errors })
           open === true
             ? <DatePicker
                 dateSelected={ value }
-                updateInputDate={ (dateSelected) => handleOnSelectDate(dateSelected) }
+                updateSelectedDate={ (dateSelected) => handleOnSelectDate(dateSelected) }
                 themes={ classesDatePicker }
             />
             : null

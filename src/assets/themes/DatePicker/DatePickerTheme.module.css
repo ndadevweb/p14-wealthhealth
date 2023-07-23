@@ -21,12 +21,6 @@
   background: #EEE;
 }
 
-.customThemeButtonsAction .triangleLeft {}
-
-.customThemeButtonsAction .triangleRight {}
-
-.customThemeButtonsAction .home {}
-
 /* DatePicker DayName */
 
 .customThemeDayNamesDayName {
@@ -34,8 +28,6 @@
 }
 
 /* DatePicker DayCell Day */
-
-.customThemeDayCell {}
 
 .customThemeDayCellDay {
   background: #FFF;
@@ -50,4 +42,7 @@
   background: #19a3e0;
 }
 
-.customThemeDayCellDayAnotherMonth {}
+.customThemeDayCellDayToday {
+  background: rgba(0, 0, 0, .2);
+  color: #FFF;
+}

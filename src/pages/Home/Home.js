@@ -1,7 +1,11 @@
 import { useDocumentTitle } from '../../hooks/useDocumentTitle'
 import { CreateEmployee } from '../../components'
-// import classes from './Home.module.css'
 
+/**
+ * Page to add a new employee
+ *
+ * @returns <Home />
+ */
 export default function Home() {
 
   useDocumentTitle('Create employee')

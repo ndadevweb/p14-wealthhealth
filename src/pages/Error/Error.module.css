@@ -1,0 +1,22 @@
+.container {
+  position: absolute;
+  z-index: -1;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
+  color: var(--secondary);
+}
+
+.container p {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.container p span:first-child {
+  font-size: 5rem;
+}
+
+.container p span:last-child {
+  font-size: 4rem;
+}

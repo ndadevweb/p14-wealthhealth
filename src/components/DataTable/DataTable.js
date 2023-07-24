@@ -13,13 +13,19 @@ import classes from './DataTable.module.css'
  * DataTable to display data
  *
  * @param {Object} props
- * @param {Array}  props.data
- * @param {Array}  props.columns
- * @param {Object} props.rows
- * @param {Number} props.maxDefaultTotalEntries
- * @param {Object} props.themes (optional)
+ * @param {Array}  props.data                   containing data to display
+ * @param {Array}  props.columns                column's configuration
+ * @param {Object} props.rows                   row's configuration
+ * @param {Number} props.maxDefaultTotalEntries number max of entries to display per page
+ * @param {Object} props.themes (optional)      css classes to custom style of the DataTable
  *
- * @returns <DataTable data={ ... } columns={ ... } rows={ ... } maxDefaultEntries={ ... } />
+ * @returns <DataTable
+ *            data={ ... }
+ *            columns={ ... }
+ *            rows={ ... }
+ *            maxDefaultEntries={ ... }
+ *            themes={ ... }
+ *          />
  */
 export default function DataTable({ data, columns, rows, maxDefaultEntries, themes }) {
 
@@ -55,6 +61,25 @@ export default function DataTable({ data, columns, rows, maxDefaultEntries, them
     setSortBy(newSortBy)
   }
 
+  /**
+   * Change the number of entries to display
+   * per page and updates the page number only
+   * if the current page is greater than the number
+   * of entries it is supposed to be able to display
+   *
+   * @param {Number} numberOfEntriesPerPage
+   */
+  function updateEntriesToDisplay(numberOfEntriesPerPage) {
+    const dataLength = data.length
+
+    const pageMaxAfterChange = Math.ceil(dataLength / numberOfEntriesPerPage)
+    if(pageMaxAfterChange < currentPage) {
+      setCurrentPage(() => pageMaxAfterChange)
+    }
+
+    setEntriesToDisplay(() => numberOfEntriesPerPage)
+  }
+
   const dataSorted = data.length > 0
     ? sortDataByColumn(data, columns, sortBy.id, sortBy.orderBy)
     : []
@@ -63,13 +88,12 @@ export default function DataTable({ data, columns, rows, maxDefaultEntries, them
 
   const { dataFiltered, fromEntry, toEntry } = getEntries(dataSortedByValue, entriesToDisplay, currentPage)
 
-
   return (
     <div className={ customTheme(themes, [classes.container], 'customThemeContainer') }>
       <div className={ customTheme(themes, [classes.header], 'customThemeContainerHeader') }>
         <ShowEntries
           entriesToDisplay={ entriesToDisplay }
-          updateEntriesToDisplay={ (number) => setEntriesToDisplay(number) }
+          updateEntriesToDisplay={ (numberOfEntriesPerPage) => updateEntriesToDisplay(numberOfEntriesPerPage) }
           themes={ themes }
         />
         <Search

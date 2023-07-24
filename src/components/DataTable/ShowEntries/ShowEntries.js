@@ -17,9 +17,9 @@ import { customTheme } from '../utils'
  * - MAX_ENTRIES_100
  *
  * @param {object}   props
- * @param {Number}   props.entriesToDisplay
- * @param {Function} props.updateEntriesToDisplay
- * @param {Object}   props.themes
+ * @param {Number}   props.entriesToDisplay       entries displayed
+ * @param {Function} props.updateEntriesToDisplay callback function to change the number of the entries to display
+ * @param {Object}   props.themes                 css classes to custom the component
  *
  * @returns <ShowEntries entriesToDisplay{ ... } updateEntriesToDisplay={ ... } themes={ ... } />
  */

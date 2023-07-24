@@ -4,11 +4,11 @@ import { customTheme } from '../utils'
  * Show details about the number entries to display
  *
  * @param {Object} props
- * @param {Number} props.totalEntries
- * @param {Number} props.from
- * @param {Number} props.to
+ * @param {Number} props.totalEntries number of the entries to display
+ * @param {Number} props.fromEntry    first entry
+ * @param {Number} props.toEntry      to last entry
  *
- * @returns <ShowingEntries totalEntries={ ... } />
+ * @returns <ShowingEntries totalEntries={ ... } fromEntry={ ... } toEntry={ ... } themes={ ... } />
  */
 export default function ShowingEntries({ totalEntries, fromEntry, toEntry, themes }) {
 

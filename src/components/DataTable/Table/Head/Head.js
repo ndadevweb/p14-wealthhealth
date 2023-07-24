@@ -8,9 +8,10 @@ import classes from './Head.module.css'
  *  and sort data with key Space
  *
  * @param {Object}   props
- * @param {Array}    props.columns
- * @param {Function} props.updateSortByColumn
- * @param {String}   props.sortByColumn
+ * @param {Array}    props.columns            columns of the table's head
+ * @param {Function} props.updateSortByColumn callback function to sort the data in the table
+ * @param {String}   props.sortByColumn       column on which the sort is active
+ * @param {Object}   props.themes             css classes to custom the component
  *
  * @returns <Head columns={ ... } updateSortByColumn={ ... } sortByColunm={ ... }  themes={ ... } />
  */

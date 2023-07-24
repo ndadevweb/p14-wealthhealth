@@ -5,12 +5,12 @@ import classes from './Body.module.css'
  * body that will contain the data
  *
  * @param {Object} props
- * @param {Object} props.rows (optional)
- * @param {Number} props.numberOfColumns
- * @param {Array}  props.data
- * @param {Object} props.themes (optional)
+ * @param {Object} props.rows              row's configuration (optional)
+ * @param {Number} props.numberOfColumns   number of columns
+ * @param {Array}  props.data              data to display
+ * @param {Object} props.themes (optional) css classes to custom the component
  *
- * @returns <Body { numberOfColumns={ ... } data={ ... } themes={ ... } />
+ * @returns <Body { rows={ ... } numberOfColumns={ ... } data={ ... } themes={ ... } />
  */
 export default function Body({ rows, numberOfColumns, data, themes }) {
 

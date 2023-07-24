@@ -5,10 +5,10 @@ import classes from './Search.module.css'
  * Compopoent to display an input to search value
  *
  * @param {Object}   props
- * @param {Function} props.updateSearchValue
- * @param {Object}   props.themes
+ * @param {Function} props.updateSearchValue  callback function to search value
+ * @param {Object}   props.themes             css classes to custom the component
  *
- * @returns <Search updateSearchValue={ ... } />
+ * @returns <Search updateSearchValue={ ... } themes={ ... } />
  */
 export default function Search({ updateSearchValue, themes }) {
 

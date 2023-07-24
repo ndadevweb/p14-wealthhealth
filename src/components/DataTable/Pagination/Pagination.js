@@ -5,11 +5,11 @@ import classes from './Pagination.module.css'
  * Display the DataTable's pagination
  *
  * @param {Object}   props
- * @param {Number}   props.totalEntries
- * @param {Array}    props.entriesToDisplay
- * @param {Number}   props.currentPage
- * @param {Function} props.updateCurrentPage
- * @param {Object}   props.themes (optional)
+ * @param {Number}   props.totalEntries      total entries
+ * @param {Array}    props.entriesToDisplay  total entries to display on page
+ * @param {Number}   props.currentPage       current page
+ * @param {Function} props.updateCurrentPage callback function to change the current page
+ * @param {Object}   props.themes (optional) css classes to custom the component
  *
  * @returns <Pagination
  *            totalEntries={ ... }

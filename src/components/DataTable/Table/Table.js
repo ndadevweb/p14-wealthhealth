@@ -8,11 +8,12 @@ import classes from './Table.module.css'
  * table that will contain the data
  *
  * @param {Object}   props
- * @param {Array}    props.columns
- * @param {Object}   props.rows (optional)
- * @param {Array}    props.data
- * @param {String}   props.sortByColumn
- * @param {Function} props.updateSortByColumn
+ * @param {Array}    props.columns            head column's configuration
+ * @param {Object}   props.rows               row column's configuration (optional)
+ * @param {Array}    props.data               data to display in the table
+ * @param {String}   props.sortByColumn       column on which the sort is active
+ * @param {Function} props.updateSortByColumn callback function to sort the data in the table
+ * @param {Object}   props.themes             css classes to custom the component
  *
  * @returns <Table
  *            columns={ ... }

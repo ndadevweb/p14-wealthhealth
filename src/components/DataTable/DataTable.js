@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { MAX_ENTRIES_10 as MAX_DEFAULT_ENTRIES } from './constants'
 import { ORDER_BY_ASC, ORDER_BY_DESC } from './constants'
-import { customTheme, getEntries, sortDataByColumn, sortDataByValue } from './utils'
+import { customTheme, getEntries, sortDataByColumn, sortDataByValue, maxPage } from './utils'
 import ShowEntries from './ShowEntries/ShowEntries'
 import Search from './Search/Search'
 import Table from './Table/Table'
@@ -72,7 +72,7 @@ export default function DataTable({ data, columns, rows, maxDefaultEntries, them
   function updateEntriesToDisplay(numberOfEntriesPerPage) {
     const dataLength = data.length
 
-    const pageMaxAfterChange = Math.ceil(dataLength / numberOfEntriesPerPage)
+    const pageMaxAfterChange = maxPage(numberOfEntriesPerPage, dataLength)
     if(pageMaxAfterChange < currentPage) {
       setCurrentPage(() => pageMaxAfterChange)
     }
@@ -115,15 +115,15 @@ export default function DataTable({ data, columns, rows, maxDefaultEntries, them
 
       <div className={ customTheme(themes, [classes.footer], 'customThemeContainerFooter') }>
         <ShowingEntries
+          currentPage={ currentPage }
           totalEntries={ totalEntries }
           fromEntry={ fromEntry }
           toEntry={ toEntry }
           themes={ themes }
         />
         <Pagination
-          totalEntries={ totalEntries }
-          entriesToDisplay={ entriesToDisplay }
           currentPage={ currentPage }
+          lastPage={ maxPage(entriesToDisplay, data.length) }
           updateCurrentPage= { (number) => setCurrentPage(number) }
           themes={ themes }
         />

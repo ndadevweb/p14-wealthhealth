@@ -209,6 +209,21 @@ export function sortDataByValue(data, columns, value) {
 }
 
 /**
+ * returns the maximum number of possible pages
+ * depending on the number of entries to display
+ * and the number of data
+ *
+ * @param {Number} numberOfEntriesPerPage
+ * @param {Number} dataLength
+ * @returns {Number}
+ */
+export function maxPage(numberOfEntriesPerPage, dataLength) {
+  const pageMaxAfterChange = Math.ceil(dataLength / numberOfEntriesPerPage)
+
+  return pageMaxAfterChange
+}
+
+/**
  * Return a list of css classes to custom a component
  *
  * @param {Object} themes An object themes with custom classes

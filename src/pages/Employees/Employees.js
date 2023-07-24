@@ -1,7 +1,9 @@
+import { useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { fetchAll } from '../../features/employeesSlice'
 import { useSelector } from 'react-redux'
 import { useDocumentTitle } from '../../hooks/useDocumentTitle'
+import classes from './Employee.module.css'
 import DataTable from '../../components/DataTable/DataTable'
 import classesDataTable from '../../assets/themes/DataTable/DataTableTheme.module.css'
 
@@ -28,13 +30,15 @@ export default function Employees() {
     zipCode: { align: 'right' }
   }
 
+  const refTitlePage = useRef(null)
+
   const employees = useSelector(fetchAll)
 
   useDocumentTitle('Employee list')
 
   return (
     <>
-      <h2 className="pageTitle">Current Employees</h2>
+      <h2 className="pageTitle" ref={ refTitlePage }>Current Employees</h2>
 
       <DataTable
         data={ employees }
@@ -42,7 +46,10 @@ export default function Employees() {
         rows={ dataTablesRowsConfig }
         themes={ classesDataTable }
       />
-      <Link to='/'>Home</Link>
+
+      <div className={ classes.bottomPageActions }>
+        <Link to='/' className="btn">Home</Link>
+      </div>
     </>
   )
 }

@@ -40,6 +40,7 @@ h2.pageTitle {
   padding: 5px;
 }
 
+.btn,
 .formBtn {
   border: transparent;
   border-radius: 5px;
@@ -48,8 +49,10 @@ h2.pageTitle {
   border: 3px solid var(--primary);
   color: var(--secondary);
   font-weight: 600;
+  text-decoration: none;
 }
 
+.btn:hover,
 .formBtn:hover {
   background: var(--primary);
   color: var(--secondary);

@@ -200,7 +200,7 @@ export default function Create() {
           <legend>Department</legend>
 
           <FormDropDown
-            label={ 'State' }
+            label={ 'Department' }
             data={ departmentDataFromJSON.data }
             value={ department }
             onChange={ (stateDepartmentSelected) => setDepartment(stateDepartmentSelected) }

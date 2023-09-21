@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { MAX_ENTRIES_10 as MAX_DEFAULT_ENTRIES } from './constants'
 import { ORDER_BY_ASC, ORDER_BY_DESC } from './constants'
 import { customTheme, getEntries, sortDataByColumn, sortDataByValue, maxPage } from './utils'
@@ -44,6 +44,8 @@ export default function DataTable({ data, columns, rows, maxDefaultEntries, them
 
   const [currentPage, setCurrentPage] = useState(1)
 
+  const [maxPageAvailable, setMaxPageAvailable] = useState(1)
+
   /**
    * Use to sort data by an interaction with a column
    *
@@ -80,6 +82,7 @@ export default function DataTable({ data, columns, rows, maxDefaultEntries, them
     setEntriesToDisplay(() => numberOfEntriesPerPage)
   }
 
+  // rest of the data after sorting
   const dataSorted = data.length > 0
     ? sortDataByColumn(data, columns, sortBy.id, sortBy.orderBy)
     : []
@@ -87,6 +90,18 @@ export default function DataTable({ data, columns, rows, maxDefaultEntries, them
   const { dataSortedByValue, totalEntries } = sortDataByValue(dataSorted, columns, searchValue)
 
   const { dataFiltered, fromEntry, toEntry } = getEntries(dataSortedByValue, entriesToDisplay, currentPage)
+
+  useEffect(() => {
+    const newMaxPageAvailable = maxPage(entriesToDisplay, dataSortedByValue.length) || 1
+
+    if(newMaxPageAvailable !== maxPageAvailable) {
+      setMaxPageAvailable(() => maxPage(entriesToDisplay, dataSortedByValue.length))
+    }
+
+    if(newMaxPageAvailable < currentPage) {
+      setCurrentPage(() => newMaxPageAvailable)
+    }
+  }, [dataSortedByValue, entriesToDisplay, currentPage, setCurrentPage, maxPageAvailable, setMaxPageAvailable])
 
   return (
     <div className={ customTheme(themes, [classes.container], 'customThemeContainer') }>
@@ -123,8 +138,9 @@ export default function DataTable({ data, columns, rows, maxDefaultEntries, them
         />
         <Pagination
           currentPage={ currentPage }
-          lastPage={ maxPage(entriesToDisplay, data.length) }
-          updateCurrentPage= { (number) => setCurrentPage(number) }
+          // lastPage={ maxPage(entriesToDisplay, totalEntries) }
+          lastPage={ maxPageAvailable }
+          updateCurrentPage= { (number) =>  setCurrentPage(number) }
           themes={ themes }
         />
       </div>

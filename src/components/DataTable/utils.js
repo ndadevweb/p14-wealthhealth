@@ -217,8 +217,8 @@ export function sortDataByValue(data, columns, value) {
  * @param {Number} dataLength
  * @returns {Number}
  */
-export function maxPage(numberOfEntriesPerPage, dataLength) {
-  const pageMaxAfterChange = Math.ceil(dataLength / numberOfEntriesPerPage)
+export function maxPage(numberOfEntriesPerPage, totalEntries) {
+  const pageMaxAfterChange = Math.ceil(totalEntries / numberOfEntriesPerPage)
 
   return pageMaxAfterChange
 }

@@ -196,16 +196,26 @@ export default function DropDown({
    * The dropdown button recover the focus
    *
    * @param {Event} event
+   * @returns Boolean|null
    */
   function handleClickItemSelected(event) {
     const target = event.target
     const { type, index } = target?.dataset
+
+    // fix if a wrong value in data-index
+    if(typeof data[+index] === 'undefined') {
+      setOpen(() => false)
+
+      return null
+    }
 
     if(type !== undefined && index !== undefined && type === 'item') {
       refButton.current.focus()
       updateValue(() => data[+index])
       setOpen(() => false)
     }
+
+    return true
   }
 
   /**

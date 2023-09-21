@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useState, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { fetchAll } from '../../features/employeesSlice'
 import { useSelector } from 'react-redux'
@@ -6,6 +6,7 @@ import { useDocumentTitle } from '../../hooks/useDocumentTitle'
 import classes from './Employee.module.css'
 import DataTable from '../../components/DataTable/DataTable'
 import classesDataTable from '../../assets/themes/DataTable/DataTableTheme.module.css'
+import mockEmployees from '../../data/mock/employees.json'
 
 /**
  * Page to display the employees list
@@ -30,6 +31,8 @@ export default function Employees() {
     zipCode: { align: 'right' }
   }
 
+  const [useMock, setUseMock] = useState(false)
+
   const refTitlePage = useRef(null)
 
   const employees = useSelector(fetchAll)
@@ -40,8 +43,14 @@ export default function Employees() {
     <>
       <h2 className="pageTitle" ref={ refTitlePage }>Current Employees</h2>
 
+      <button className="btn" onClick={ () => setUseMock(() => useMock === false)}>
+        {
+          useMock === true ? 'Data from Redux' : 'Data from Mock'
+        }
+      </button>
+
       <DataTable
-        data={ employees }
+        data={ useMock === true ? mockEmployees.data : employees }
         columns={ dataTablesColumnsConfig }
         rows={ dataTablesRowsConfig }
         themes={ classesDataTable }
